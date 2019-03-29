@@ -1,13 +1,10 @@
 all: apertus
 
-apertus: main.o Raw12Img.o Bitmap.o Pixelmap.o Demosaicing.o AVI.o
-	g++ -o apertus main.o Raw12Img.o Bitmap.o Pixelmap.o Demosaicing.o AVI.o
+apertus: main.o Raw12Img.o Bitmap.o Pixelmap.o Demosaicing.o
+	g++ -o apertus main.o Raw12Img.o Bitmap.o Pixelmap.o Demosaicing.o
 
 main.o: main.cpp
 	g++ -c main.cpp
-
-AVI.o: src/AVI.cpp src/headers/AVI.h
-	g++ -c src/AVI.cpp
 
 Pixelmap.o: src/Pixelmap.cpp src/headers/PPM_HEAD.h
 	g++ -c src/Pixelmap.cpp
