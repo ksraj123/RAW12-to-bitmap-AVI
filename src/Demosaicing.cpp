@@ -39,7 +39,7 @@ void Demosaic::Green(uint8_t c_g[max_height+1][max_width+1])
                                 + c_g[max_height][max_width-1])/2;
 }
 
-void Demosaic::blue(uint8_t c_b[max_height+1][max_width+1])
+void Demosaic::Blue(uint8_t c_b[max_height+1][max_width+1])
 {
     for (int i = 2; i <= max_height; i+=2)
         for (int j = 3; j<=max_width-1; j+=2)
@@ -58,7 +58,7 @@ void Demosaic::blue(uint8_t c_b[max_height+1][max_width+1])
     c_b[1][1] = (c_b[1][2] + c_b[2][1])/2;
 }
 
-void Demosaic::red(uint8_t c_r[max_height+1][max_width+1])
+void Demosaic::Red(uint8_t c_r[max_height+1][max_width+1])
 {
     for (int i = 1; i <= max_height-1; i+= 2)
         for (int j = 2; j<= max_width-2; j+= 2)
