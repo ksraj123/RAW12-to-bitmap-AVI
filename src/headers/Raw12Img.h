@@ -5,7 +5,6 @@
 #include "BMP_HEAD.h"
 #include "PPM_HEAD.h"
 #include "Demosaicing.h"
-#include "AVI.h"
 
 struct streams{
 std::ifstream intputfile;
