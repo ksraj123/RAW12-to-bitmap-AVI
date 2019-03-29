@@ -4,11 +4,10 @@ using namespace OutputImage::bitmap;
 
 namespace OutputImage::bitmap{
 
-void write_bitmap(uint8_t arr_r[max_height+1][max_width+1],
+void Write_bitmap(uint8_t arr_r[max_height+1][max_width+1],
                   uint8_t arr_b[max_height+1][max_width+1],
                   uint8_t arr_g[max_height+1][max_width+1])
 {
-
         BitmapFileHeader flleHeader;
         BitmapInfoHeader infoHeader;
 
@@ -20,7 +19,8 @@ void write_bitmap(uint8_t arr_r[max_height+1][max_width+1],
 
         std::ofstream file;
         file.open("result/BMP_output.bmp", std::ios::binary);
-        if(!file){
+        if(!file)
+        {
             std::cerr << "Error: File cannot be opened\n\tExiting\n";
             exit(1);
         }
@@ -28,8 +28,10 @@ void write_bitmap(uint8_t arr_r[max_height+1][max_width+1],
         file.write((char*)&flleHeader, sizeof(flleHeader));
         file.write((char*)&infoHeader, sizeof(infoHeader));
 
-        for (int i = max_height; i >= 1; i--){
-            for (int j = 1; j <= max_width; j++){
+        for (int i = max_height; i >= 1; i--)
+        {
+            for (int j = 1; j <= max_width; j++)
+            {
                 file.write((char*)&arr_b[i][j], sizeof(uint8_t));
                 file.write((char*)&arr_g[i][j], sizeof(uint8_t));
                 file.write((char*)&arr_r[i][j], sizeof(uint8_t));
@@ -37,7 +39,8 @@ void write_bitmap(uint8_t arr_r[max_height+1][max_width+1],
         }
 
         file.close();
-        if (!file){
+        if (!file)
+        {
             std::cerr << "Error: File cannot be Closed\n\tExiting\n";
             exit(1);
         }
