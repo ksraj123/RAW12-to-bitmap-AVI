@@ -73,5 +73,4 @@ void Raw12Img::write_channels(){
 
 void Raw12Img::write_debayered_image(){
     OutputImage::bitmap::write_bitmap(chnl.red, chnl.blue, chnl.green);
-    write_to_avi(chnl.red, chnl.blue, chnl.green);
 }
