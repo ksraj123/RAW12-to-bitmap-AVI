@@ -40,17 +40,17 @@ struct BitmapInfoHeader {
     std::int32_t importantColors;
 
     BitmapInfoHeader(){
-    width = max_width;
-    height = max_height;
-    headerSize = 40;
-    planes = 1;
-    bitsPerPixel = 24;
-    compression = 0;
-    dataSize = 0;
-    horizontalResolution = 2400;
-    verticalResolution = 2400;
-    colours = 0;
-    importantColors = 0;
+      width = max_width;
+      height = max_height;
+      headerSize = 40;
+      planes = 1;
+      bitsPerPixel = 24;
+      compression = 0;
+      dataSize = 0;
+      horizontalResolution = 2400;
+      verticalResolution = 2400;
+      colours = 0;
+      importantColors = 0;
     }
 };
 
