@@ -1,76 +1,61 @@
 #include "headers/Demosaicing.h"
 
-void Demosaic::Green(uint8_t c_g[max_height+1][max_width+1])
+void Demosaic::Green(unsigned char* arr)
 {
-    //dealing with pixels surrounded by green pixels on all 4 sides
-    for (int row = 2; row <= max_height-1; row++)
+    for (int itr = 0; itr < totalPix; itr++)
+    {
+        if (arr[itr] == 0)
+        {
+            if (itr < max_width || totalPix-1-itr < max_width) // first and last row
+                arr[itr] = (arr[itr-1] + arr[itr+1])/2;
+            else if (itr % max_width == 0 || itr+1 % max_width == 0) // first and last colm
+                arr[itr] = (arr[itr-max_width] + arr[itr+max_width])/2;
+            else
+                arr[itr] = (arr[itr-1] + arr[itr+1] + arr[itr-max_width]
+                          + arr[itr+max_width])/4;
+        }
+    }
+}
+
+void Demosaic::Blue(unsigned char* arr)
+{
+    int row;
+    for (int itr = max_width; itr < totalPix; itr++)
+    {
+        row = itr / max_width;
+        if ((int)arr[itr] == 0)
+        {
+        if (row % 2 != 0)
+            arr[itr] = (arr[itr-1] + arr[itr+1])/2;
+        else
+            arr[itr] = (arr[itr-max_width] + arr[itr+max_width])/2;
+        }
+    }
+
+    for (int itr = 0; itr < max_width; itr++) //first row
+        arr[itr] = arr[itr + max_width];
+
+    for (int itr = 0; itr < totalPix; itr += max_width) //first column
+        arr[itr] = arr[itr+1];
+}
+
+void Demosaic::Red(unsigned char* arr)
+{
+    int row;
+    for (int itr = 0; itr < totalPix-max_width; itr++)
+    {
+        row = itr / max_width;
+        if ((int)arr[itr] == 0)
         {
         if (row % 2 == 0)
-            for (int col = 2; col <= max_width-2; col+=2)
-                c_g[row][col] = (c_g[row][col+1] + c_g[row][col-1]
-                               + c_g[row+1][col] + c_g[row-1][col])/4;
+            arr[itr] = (arr[itr-1] + arr[itr+1])/2;
         else
-            for (int col = 3; col <= max_width-1; col++)
-                c_g[row][col] = (c_g[row][col+1] + c_g[row][col-1]
-                               + c_g[row+1][col] + c_g[row-1][col])/4;
+            arr[itr] = (arr[itr-max_width] + arr[itr+max_width])/2;
         }
+    }
+    for (int itr = 1; itr <= max_width; itr++) //last row
+        arr[totalPix - itr] = arr[totalPix - itr - max_width];
 
-    // dealing with pixels in top row
-    for (int col = 3; col<=max_width-1; col+=2)
-         c_g[1][col] = (c_g[1][col-1] + c_g[1][col+1])/2;
-
-    // dealing with pixels in bottom row
-    for (int col = 2; col<=max_width-2; col+=2)
-         c_g[max_height][col] = (c_g[max_height][col-1]
-                               + c_g[max_height][col+1])/2;
-
-    // dealing with pixels in leftmost column
-    for (int row = 3; row<=max_height-1; row+=2)
-         c_g[row][1] = (c_g[row-1][1] + c_g[row+1][1])/2;
-
-    // dealing with pixels in rightmost column
-    for (int row = 2; row<=max_height-2; row+=2)
-         c_g[row][max_width] = (c_g[row-1][max_width]
-                              + c_g[row+1][max_width])/2;
-
-
-    c_g[1][1] = (c_g[1][2] + c_g[2][1])/2;
-    c_g[max_height][max_width] = (c_g[max_height-1][max_width]
-                                + c_g[max_height][max_width-1])/2;
-}
-
-void Demosaic::Blue(uint8_t c_b[max_height+1][max_width+1])
-{
-    for (int i = 2; i <= max_height; i+=2)
-        for (int j = 3; j<=max_width-1; j+=2)
-            c_b[i][j] = (c_b[i][j-1] + c_b[i][j+1])/2;
-
-    for (int i = 2; i <= max_width; i++)
-        for (int j = 3; j<=max_height-1; j+=2)
-            c_b[j][i] = (c_b[j-1][i] + c_b[j+1][i])/2;
-
-    for (int i = 2; i <=max_height; i++)
-        c_b[i][1] = c_b[i][2];
-
-    for (int i = 2; i <=max_width; i++)
-        c_b[1][i] = c_b[2][i];
-
-    c_b[1][1] = (c_b[1][2] + c_b[2][1])/2;
-}
-
-void Demosaic::Red(uint8_t c_r[max_height+1][max_width+1])
-{
-    for (int i = 1; i <= max_height-1; i+= 2)
-        for (int j = 2; j<= max_width-2; j+= 2)
-            c_r[i][j] = (c_r[i][j-1] + c_r[i][j+1])/2;
-
-    for (int i = 1; i <= max_width-1; i++)
-        for (int j = 2; j<=max_height-2; j+=2)
-            c_r[j][i] = (c_r[j-1][i] + c_r[j+1][i])/2;
-
-    for (int i = 1; i <=max_height; i++)
-        c_r[i][max_width] = c_r[i][max_width-1];
-
-    for (int i = 1; i <=max_width; i++)
-        c_r[max_height][i] = c_r[max_height-1][i];
+    for (int itr = max_width-1; itr < totalPix; itr += max_width) //last column
+        arr[itr] = arr[itr-1];
 }
