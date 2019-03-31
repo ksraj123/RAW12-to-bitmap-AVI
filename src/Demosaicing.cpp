@@ -35,6 +35,7 @@ void Demosaic::Blue(unsigned char* arr)
     }
     for (int itr = 0; itr < max_width; itr++) //first row
         arr[itr] = arr[itr + max_width];
+ 
     for (int itr = 0; itr < totalPix; itr += max_width) //first column
         arr[itr] = arr[itr+1];
  }
@@ -47,15 +48,15 @@ void Demosaic::Red(unsigned char* arr)
         row = itr / max_width;
         if ((int)arr[itr] == 0)
         {
-        if (row % 2 == 0)
-            arr[itr] = (arr[itr-1] + arr[itr+1])/2;
-        else
-            arr[itr] = (arr[itr-max_width] + arr[itr+max_width])/2;
+           if (row % 2 == 0)
+               arr[itr] = (arr[itr-1] + arr[itr+1])/2;
+           else
+               arr[itr] = (arr[itr-max_width] + arr[itr+max_width])/2;
         }
     }
     for (int itr = 1; itr <= max_width; itr++) //last row
         arr[totalPix - itr] = arr[totalPix - itr - max_width];
-
+ 
     for (int itr = max_width-1; itr < totalPix; itr += max_width) //last column
         arr[itr] = arr[itr-1];
  }
