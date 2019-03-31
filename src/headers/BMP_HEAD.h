@@ -3,30 +3,33 @@
 #define BMP_HEAD
 #include "functional.h"
 
-namespace OutputImage {
-
-namespace bitmap{
-
-void write_bitmap(uint8_t arr_r[max_height+1][max_width+1],
-                  uint8_t arr_b[max_height+1][max_width+1],
-                  uint8_t arr_g[max_height+1][max_width+1]);
+namespace OutputImage
+{
+namespace bitmap
+{
+void Write_bitmap(unsigned char* arr_r,
+                  unsigned char* arr_b,
+                  unsigned char* arr_g);
 
 #pragma pack(push, 2)
 
-struct BitmapFileHeader {
+struct BitmapFileHeader
+{
     char header[2];
     std::int32_t fileSize;
     std::int32_t reserved;
     std::int32_t dataOffset;
 
-    BitmapFileHeader(){
-    reserved = 0;
-    header[0] = 'B';
-    header[1] = 'M';
+    BitmapFileHeader()
+    {
+        reserved = 0;
+        header[0] = 'B';
+        header[1] = 'M';
     }
 };
 
-struct BitmapInfoHeader {
+struct BitmapInfoHeader
+{
     std::int32_t headerSize;
     std::int32_t width;
     std::int32_t height;
@@ -39,21 +42,21 @@ struct BitmapInfoHeader {
     std::int32_t colours{0};
     std::int32_t importantColors;
 
-    BitmapInfoHeader(){
-      width = max_width;
-      height = max_height;
-      headerSize = 40;
-      planes = 1;
-      bitsPerPixel = 24;
-      compression = 0;
-      dataSize = 0;
-      horizontalResolution = 2400;
-      verticalResolution = 2400;
-      colours = 0;
-      importantColors = 0;
+    BitmapInfoHeader()
+    {
+        width = max_width;
+        height = max_height;
+        headerSize = 40;
+        planes = 1;
+        bitsPerPixel = 24;
+        compression = 0;
+        dataSize = 0;
+        horizontalResolution = 2400;
+        verticalResolution = 2400;
+        colours = 0;
+        importantColors = 0;
     }
 };
-
 }
 }
 
