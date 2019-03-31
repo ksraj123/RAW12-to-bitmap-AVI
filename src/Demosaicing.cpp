@@ -1,5 +1,7 @@
 #include "headers/Demosaicing.h"
 
+// following Bilinear Interpolation approach
+
 void Demosaic::Green(unsigned char* arr)
 {
     for (int itr = 0; itr < totalPix; itr++)
