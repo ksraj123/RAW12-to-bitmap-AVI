@@ -4,9 +4,9 @@ using namespace OutputImage::bitmap;
 
 namespace OutputImage::bitmap{
 
-void Write_bitmap(uint8_t arr_r[max_height+1][max_width+1],
-                  uint8_t arr_b[max_height+1][max_width+1],
-                  uint8_t arr_g[max_height+1][max_width+1])
+void Write_bitmap(unsigned char* arr_r,
+                  unsigned char* arr_b,
+                  unsigned char* arr_g)
 {
         BitmapFileHeader flleHeader;
         BitmapInfoHeader infoHeader;
@@ -14,7 +14,6 @@ void Write_bitmap(uint8_t arr_r[max_height+1][max_width+1],
         flleHeader.fileSize = sizeof(BitmapFileHeader)
                             + sizeof(BitmapInfoHeader)
                             + max_width * max_height * 3;
-
         flleHeader.dataOffset = sizeof(BitmapFileHeader) + sizeof(BitmapInfoHeader);
 
         std::ofstream file;
@@ -24,20 +23,18 @@ void Write_bitmap(uint8_t arr_r[max_height+1][max_width+1],
             std::cerr << "Error: File cannot be opened\n\tExiting\n";
             exit(1);
         }
-
         file.write((char*)&flleHeader, sizeof(flleHeader));
         file.write((char*)&infoHeader, sizeof(infoHeader));
 
-        for (int i = max_height; i >= 1; i--)
+        for (int row = max_height-1; row >= 0; row--)
         {
-            for (int j = 1; j <= max_width; j++)
+            for (int col = row * max_width; col < (row+1)*max_width; col++)
             {
-                file.write((char*)&arr_b[i][j], sizeof(uint8_t));
-                file.write((char*)&arr_g[i][j], sizeof(uint8_t));
-                file.write((char*)&arr_r[i][j], sizeof(uint8_t));
+                file.write((char*)&arr_b[col], sizeof(uint8_t));
+                file.write((char*)&arr_g[col], sizeof(uint8_t));
+                file.write((char*)&arr_r[col], sizeof(uint8_t));
             }
         }
-
         file.close();
         if (!file)
         {
