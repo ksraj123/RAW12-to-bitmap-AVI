@@ -1,76 +1,62 @@
 #include "headers/Raw12Img.h"
+#define Sensel(A, B) ((A & 0x0F) << 4 | (B & 0xF0) >> 4)
 
 channels chnl;
-
 streams strm;
+char* file_data;
 
-Raw12Img::Raw12Img(std::string INPUT_FILE){
-    this->INPUT_FILE = INPUT_FILE;
+Raw12Img::Raw12Img(std::string file_name)
+{
+    this->file_name = file_name;
 }
 
-void Raw12Img::load(){
-    strm.intputfile.open(INPUT_FILE.c_str(), std::ios::binary);
-    if(!strm.intputfile){
+void Raw12Img::Load()
+{
+    strm.intputfile.open(file_name.c_str(), std::ios::binary);
+    if(!strm.intputfile)
+    {
         std::cerr << "Error: File cannot be opened\b\tExiting" << std::endl;
         exit(1);
     }
+    file_data = new char [inputSize];
+    strm.intputfile.read(file_data, inputSize);
 
-    int total_row_bytes = (max_width * 3) / 2;
+    for (int itr = 0; itr < inputSize; itr+= 3)
+    {
+        uint8_t byte1 = file_data[itr];
+        uint8_t byte2 = file_data[itr+1];
+        uint8_t byte3 = file_data[itr+2];
+        int row = (itr * 2) / (max_width * 3);
 
-    for (int i = 1; i <= max_height; i++){
-        int cnt = 1;
-        for (int j = 1; j <= (total_row_bytes/3); j++){
-            char inBuf [3];
-            strm.intputfile.read(inBuf, 3);
-
-            int r_g = ((uint8_t)inBuf[0]) << 4 |
-                      ((uint8_t)inBuf[1] & 0xF0) >> 4;
-            int g_b = ((uint8_t)inBuf[1] & 0x0F) << 8 |
-                      ((uint8_t)inBuf[2]);
-
-            r_g = (r_g & 0xFF0) >> 4;
-            g_b = (g_b & 0xFF0) >> 4;
-            chnl.CFA[i][cnt] = r_g;
-            chnl.CFA[i][cnt+1] = g_b;
-            cnt += 2;
+        if (row % 2 == 0)
+        {
+            chnl.Push(byte1, 0, 0);
+            chnl.Push(0, Sensel(byte2, byte3), 0);
+        }
+        else
+        {
+            chnl.Push(0, byte1, 0);
+            chnl.Push(0, 0, Sensel(byte2, byte3));
         }
     }
 	strm.intputfile.close();
 }
 
-
-void Raw12Img::initialize_channels(){
-    for (int i = 1; i <= max_height; i+=2)
-        for (int j = 1; j<=max_width; j+=2)
-            chnl.red[i][j] = chnl.CFA[i][j];
-
-    for (int i = 2; i <= max_height; i+=2)
-        for (int j = 2; j<=max_width; j+=2)
-            chnl.blue[i][j] = chnl.CFA[i][j];
-
-    for (int i = 1; i <= max_height; i++){
-        if (i %2 != 0)
-           for (int j = 2; j<=max_width; j+=2)
-               chnl.green[i][j] = chnl.CFA[i][j];
-        else
-           for (int j = 1; j<=max_width; j+=2)
-               chnl.green[i][j] = chnl.CFA[i][j];
-    }
+void Raw12Img::Debayer_channels()
+{
+    Demosaic::Red(chnl.red.data());
+    Demosaic::Green(chnl.green.data());
+    Demosaic::Blue(chnl.blue.data());
 }
 
-
-void Raw12Img::debayer_channels(){
-    Demosaic::red(chnl.red);
-    Demosaic::green(chnl.green);
-    Demosaic::blue(chnl.blue);
+void Raw12Img::Write_channels()
+{
+    OutputImage::pixelmap::Write_channel(&strm.output_red, chnl.red.data(), "red");
+    OutputImage::pixelmap::Write_channel(&strm.output_green, chnl.green.data(), "green");
+    OutputImage::pixelmap::Write_channel(&strm.output_blue, chnl.blue.data(), "blue");
 }
 
-void Raw12Img::write_channels(){
-    OutputImage::pixelmap::write_channel(&strm.output_red, chnl.red, "red");
-    OutputImage::pixelmap::write_channel(&strm.output_green, chnl.green, "green");
-    OutputImage::pixelmap::write_channel(&strm.output_blue, chnl.blue, "blue");
-}
-
-void Raw12Img::write_debayered_image(){
-    OutputImage::bitmap::write_bitmap(chnl.red, chnl.blue, chnl.green);
+void Raw12Img::Write_debayered_image()
+{
+    OutputImage::bitmap::Write_bitmap(chnl.red.data(), chnl.blue.data(), chnl.green.data());
 }
