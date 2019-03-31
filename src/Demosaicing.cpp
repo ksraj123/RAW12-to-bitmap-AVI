@@ -3,7 +3,7 @@
 // following Bilinear Interpolation approach
 
 void Demosaic::Green(unsigned char* arr)
-{
+ {
     for (int itr = 0; itr < totalPix; itr++)
     {
         if (arr[itr] == 0)
@@ -17,10 +17,10 @@ void Demosaic::Green(unsigned char* arr)
                           + arr[itr+max_width])/4;
         }
     }
-}
+ }
 
 void Demosaic::Blue(unsigned char* arr)
-{
+ {
     int row;
     for (int itr = max_width; itr < totalPix; itr++)
     {
@@ -33,16 +33,14 @@ void Demosaic::Blue(unsigned char* arr)
             arr[itr] = (arr[itr-max_width] + arr[itr+max_width])/2;
         }
     }
-
     for (int itr = 0; itr < max_width; itr++) //first row
         arr[itr] = arr[itr + max_width];
-
     for (int itr = 0; itr < totalPix; itr += max_width) //first column
         arr[itr] = arr[itr+1];
-}
+ }
 
 void Demosaic::Red(unsigned char* arr)
-{
+ {
     int row;
     for (int itr = 0; itr < totalPix-max_width; itr++)
     {
@@ -60,4 +58,4 @@ void Demosaic::Red(unsigned char* arr)
 
     for (int itr = max_width-1; itr < totalPix; itr += max_width) //last column
         arr[itr] = arr[itr-1];
-}
+ }
