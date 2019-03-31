@@ -5,30 +5,40 @@
 #include "BMP_HEAD.h"
 #include "PPM_HEAD.h"
 #include "Demosaicing.h"
+#define inputSize (4096 * 3072 * 3 / 2)
+#define totalPix (4096 * 3072)
 
-struct streams{
-std::ifstream intputfile;
-std::ofstream output_red, output_blue, output_green;
-std::ofstream file_output_ppm;
+struct streams
+{
+    std::ifstream intputfile;
+    std::ofstream output_red, output_blue, output_green;
+    std::ofstream file_output_ppm;
 };
 
-struct channels{
-uint8_t CFA[max_height+1][max_width+1];
-uint8_t red[max_height+1][max_width+1];
-uint8_t blue[max_height+1][max_width+1];
-uint8_t green[max_height+1][max_width+1];
+struct channels
+{
+    std::vector <unsigned char> red;
+    std::vector <unsigned char> blue;
+    std::vector <unsigned char> green;
+
+    void Push(unsigned char r, unsigned char g, unsigned char b)
+    {
+        red.push_back(r);
+        green.push_back(g);
+        blue.push_back(b);
+    }
 };
 
-class Raw12Img{
-    std::string INPUT_FILE;
-public:
-    Raw12Img (std::string);
-    void load();
-    void initialize_channels();
-    void debayer_channels();
-    void write_channels();
-    void write_debayered_image();
+class Raw12Img
+{
+    std::string file_name;
 
+    public:
+        Raw12Img (std::string);
+        void Load();
+        void Debayer_channels();
+        void Write_channels();
+        void Write_debayered_image();
 };
 
 #endif
