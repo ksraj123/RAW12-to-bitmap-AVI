@@ -1,6 +1,6 @@
 #include "headers/Demosaicing.h"
 
-// following Bilinear Interpolation approach
+// Bilinear Interpolation approach
 
 void Demosaic::Green(unsigned char* arr)
  {
