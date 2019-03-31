@@ -1,13 +1,12 @@
 #ifndef PPM_HEAD
 #define PPM_HEAD
-
 #include "functional.h"
 
-namespace OutputImage {
-
-namespace pixelmap{
-
-    void write_channel(std::ofstream*, uint8_t arr[max_height+1][max_width+1], std::string);
+namespace OutputImage
+{
+namespace pixelmap
+{
+    void Write_channel(std::ofstream*, unsigned char* arr, std::string);
 }
 }
 #endif
