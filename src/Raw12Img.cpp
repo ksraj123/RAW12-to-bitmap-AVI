@@ -40,10 +40,6 @@ void Raw12Img::Load()
 
 void Raw12Img::DebayerChannels()
 {
-    std::cout << "Red 0 = " << (int)chnl.red[0] << std::endl;
-    std::cout << "Green 1 = " << (int)chnl.green[1] << std::endl;
-    std::cout << "Red 2 = " << (int)chnl.red[2] << std::endl;
-    std::cout << "Green 3 = " << (int)chnl.green[3] << std::endl;
     Demosaic::Red(chnl.red.data());
     Demosaic::Green(chnl.green.data());
     Demosaic::Blue(chnl.blue.data());
