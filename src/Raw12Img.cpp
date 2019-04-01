@@ -26,7 +26,6 @@ void Raw12Img::Load()
         int row = (itr * 2) / (max_width * 3);
         if (row % 2 == 0)
         {
-        // (fileData[itr] & 0x0F) << 4 | (fileData[itr] & 0xF0) >> 4
         chnl.Push(fileData[itr], 0, 0);
         chnl.Push(0, Sensel(fileData[itr+1], fileData[itr+2]), 0);
         }
