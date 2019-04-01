@@ -1,9 +1,8 @@
 #include "headers/BMP_HEAD.h"
 
 using namespace OutputImage::bitmap;
-
-namespace OutputImage::bitmap{
-
+namespace OutputImage::bitmap
+ {
 void Write_bitmap(unsigned char* arr_r,
                   unsigned char* arr_b,
                   unsigned char* arr_g)
