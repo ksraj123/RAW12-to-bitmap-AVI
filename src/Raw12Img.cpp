@@ -14,29 +14,29 @@ void Raw12Img::Load()
  {
       strm.intputfile.open(file_name.c_str(), std::ios::binary);
       if(!strm.intputfile)
-      {
-           std::cerr << "Error: File cannot be opened\b\tExiting" << std::endl;
-           exit(1);
-      }
+       {
+            std::cerr << "Error: File cannot be opened\b\tExiting" << std::endl;
+            exit(1);
+       }
       file_data = new char [inputSize];
       strm.intputfile.read(file_data, inputSize);
       for (int itr = 0; itr < inputSize; itr+= 3)
-      {
-           uint8_t byte1 = file_data[itr];
-           uint8_t byte2 = file_data[itr+1];
-           uint8_t byte3 = file_data[itr+2];
-           int row = (itr * 2) / (max_width * 3);
-           if (row % 2 == 0)
-            {
-                 chnl.Push(byte1, 0, 0);
-                 chnl.Push(0, Sensel(byte2, byte3), 0);
-            }
-           else
-            {
-                 chnl.Push(0, byte1, 0);
-                 chnl.Push(0, 0, Sensel(byte2, byte3));
-            }
-      }
+       {
+            uint8_t byte1 = file_data[itr];
+            uint8_t byte2 = file_data[itr+1];
+            uint8_t byte3 = file_data[itr+2];
+            int row = (itr * 2) / (max_width * 3);
+            if (row % 2 == 0)
+             {
+                  chnl.Push(byte1, 0, 0);
+                  chnl.Push(0, Sensel(byte2, byte3), 0);
+             }
+            else
+             {
+                  chnl.Push(0, byte1, 0);
+                  chnl.Push(0, 0, Sensel(byte2, byte3));
+             }
+       }
       strm.intputfile.close();
  }
 
