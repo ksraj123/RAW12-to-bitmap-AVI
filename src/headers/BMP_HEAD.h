@@ -15,17 +15,10 @@ namespace OutputImage
 
    struct BitmapFileHeader
     {
-         char header[2];
+         char header[2] {'B', 'M'};
          std::int32_t fileSize;
-         std::int32_t reserved;
+         std::int32_t reserved {0};
          std::int32_t dataOffset;
-
-         BitmapFileHeader()
-          {
-              reserved = 0;
-              header[0] = 'B';
-              header[1] = 'M';
-         }
     };
  
     struct BitmapInfoHeader
@@ -41,21 +34,6 @@ namespace OutputImage
           std::int32_t verticalResolution {2400};
           std::int32_t colours{0};
           std::int32_t importantColors {0};
-
-          BitmapInfoHeader()
-           {
-               // width = max_width;
-                //height = max_height;
-                //headerSize = 40;
-               // planes = 1;
-                //bitsPerPixel = 24;
-                //compression = 0;
-                //dataSize = 0;
-                //horizontalResolution = 2400;
-                //verticalResolution = 2400;
-                //colours = 0;
-                //importantColors = 0;
-           }
      };
    }
  }
