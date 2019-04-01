@@ -22,11 +22,11 @@ struct channels
       std::vector <unsigned char> green;
 
       void Push(unsigned char r, unsigned char g, unsigned char b)
-      {
-           red.push_back(r);
-           green.push_back(g);
-           blue.push_back(b);
-      }
+       {
+            red.push_back(r);
+            green.push_back(g);
+            blue.push_back(b);
+       }
  };
 
 class Raw12Img
