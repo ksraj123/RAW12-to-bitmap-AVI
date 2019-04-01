@@ -30,31 +30,31 @@ namespace OutputImage
  
     struct BitmapInfoHeader
      {
-          std::int32_t headerSize;
-          std::int32_t width;
-          std::int32_t height;
-          std::int16_t planes;
-          std::int16_t bitsPerPixel;
-          std::int32_t compression;
-          std::int32_t dataSize;
-          std::int32_t horizontalResolution;
-          std::int32_t verticalResolution;
+          std::int32_t headerSize {40};
+          std::int32_t width {max_width};
+          std::int32_t height {max_height};
+          std::int16_t planes {1};
+          std::int16_t bitsPerPixel {24};
+          std::int32_t compression {0};
+          std::int32_t dataSize {0};
+          std::int32_t horizontalResolution {2400};
+          std::int32_t verticalResolution {2400};
           std::int32_t colours{0};
-          std::int32_t importantColors;
+          std::int32_t importantColors {0};
 
           BitmapInfoHeader()
            {
-                width = max_width;
-                height = max_height;
-                headerSize = 40;
-                planes = 1;
-                bitsPerPixel = 24;
-                compression = 0;
-                dataSize = 0;
-                horizontalResolution = 2400;
-                verticalResolution = 2400;
-                colours = 0;
-                importantColors = 0;
+               // width = max_width;
+                //height = max_height;
+                //headerSize = 40;
+               // planes = 1;
+                //bitsPerPixel = 24;
+                //compression = 0;
+                //dataSize = 0;
+                //horizontalResolution = 2400;
+                //verticalResolution = 2400;
+                //colours = 0;
+                //importantColors = 0;
            }
      };
    }
