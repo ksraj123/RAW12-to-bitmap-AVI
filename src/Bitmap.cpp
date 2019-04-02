@@ -2,9 +2,7 @@
 
 namespace OutputImage::bitmap
 {
-    void Write(unsigned char* arr_r,
-               unsigned char* arr_b,
-               unsigned char* arr_g)
+    void Write(uint8_t* arr_r, uint8_t* arr_b, uint8_t* arr_g)
     {
         BitmapFileHeader flleHeader;
         BitmapInfoHeader infoHeader;
