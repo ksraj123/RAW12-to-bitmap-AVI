@@ -2,7 +2,7 @@
 
 // Bilinear Interpolation approach
 
-void Demosaic::Green(unsigned char* arr)
+void Demosaic::Green(uint8_t* arr)
 {
     for (int itr = 0; itr < totalPix; itr++)
     {
@@ -19,7 +19,7 @@ void Demosaic::Green(unsigned char* arr)
     }
 }
 
-void Demosaic::Blue(unsigned char* arr)
+void Demosaic::Blue(uint8_t* arr)
 {
     int row;
     for (int itr = max_width; itr < totalPix; itr++)
@@ -43,7 +43,7 @@ void Demosaic::Blue(unsigned char* arr)
     }
  }
 
-void Demosaic::Red(unsigned char* arr)
+void Demosaic::Red(uint8_t* arr)
 {
     int row;
     for (int itr = 0; itr < totalPix-max_width; itr++)
