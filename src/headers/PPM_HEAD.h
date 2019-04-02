@@ -6,7 +6,7 @@ namespace OutputImage
 {
     namespace PixelMap
     {
-        void Write(std::ofstream*, unsigned char* arr, std::string);
+        void Write(unsigned char* arr, std::string);
     }
 }
 #endif
