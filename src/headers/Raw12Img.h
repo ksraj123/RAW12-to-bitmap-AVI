@@ -8,23 +8,19 @@
 #define inputSize (4096 * 3072 * 3 / 2)
 #define totalPix (4096 * 3072)
 
-struct Streams
-{
-    std::ifstream intputFile;
-    std::ofstream outputRed, outputBlue, outputGreen;
-};
-
 struct Channels
 {
-    std::vector <unsigned char> red;
-    std::vector <unsigned char> blue;
-    std::vector <unsigned char> green;
+    uint8_t red[totalPix]{0};
+    uint8_t blue[totalPix]{0};
+    uint8_t green[totalPix]{0};
 
-    void Push(unsigned char r, unsigned char g, unsigned char b)
+    void Push(uint8_t r, uint8_t g, uint8_t b)
     {
-        red.push_back(r);
-        green.push_back(g);
-        blue.push_back(b);
+        static int index = 0;
+        red[index] = r;
+        green[index] = g;
+        blue[index] = b;
+        index++;
     }
 };
 
