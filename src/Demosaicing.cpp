@@ -1,69 +1,42 @@
 #include "headers/Demosaicing.h"
+#include <algorithm>
 
 // Bilinear Interpolation approach
 
-void Demosaic::Green(uint8_t* arr)
+// This fuction demosaics red and blue channels
+// the approach to demosaicing red and blue channels
+// are similar hence they are delt with in one fuction
+void Demosaic::Type1(uint8_t* arr, int start)
 {
-    for (int itr = 0; itr < totalPix; itr++)
+    int row;
+    for (int itr = start; itr < totalPix; itr+=2)
     {
-        if (arr[itr] == 0)
+        row = itr / max_width;
+        if (row % 2 == start)
         {
-            if (itr < max_width || totalPix-1-itr < max_width) // first and last row
-                arr[itr] = (arr[itr-1] + arr[itr+1])/2;
-            else if (itr % max_width == 0 || itr+1 % max_width == 0) // first and last colm
-                arr[itr] = (arr[itr-max_width] + arr[itr+max_width])/2;
-            else
-                arr[itr] = (arr[itr-1] + arr[itr+1] + arr[itr-max_width]
-                          + arr[itr+max_width])/4;
+            arr[itr-1] = (arr[itr-1-max_width] + arr[itr-1+max_width])/2;
+            arr[itr+1] = (arr[itr+1-max_width] + arr[itr+1+max_width])/2;
         }
+        arr[itr] = (arr[itr-1] + arr[itr+1])/2;
     }
+    std::fill(arr, arr+max_width, 0); // first row
+    std::fill(arr+totalPix-max_width, arr+totalPix, 0); //last row
+ }
+
+// This fuctions demosaics green channel
+void Demosaic::Type2(uint8_t* arr)
+{
+    for (int itr = 0; itr < totalPix;)
+    {
+        arr[itr] = (arr[itr-1] + arr[itr+1] + arr[itr-max_width]
+                 + arr[itr+max_width])/4;
+        if (itr/max_width != (itr+2)/max_width)
+        {
+            itr+= 3;
+            continue;
+        }
+        itr+=2;
+    }
+    std::fill(arr, arr+max_width, 0); //first row
+    std::fill(arr+totalPix-max_width, arr+totalPix, 0); //last row
 }
-
-void Demosaic::Blue(uint8_t* arr)
-{
-    int row;
-    for (int itr = max_width; itr < totalPix; itr++)
-    {
-        row = itr / max_width;
-        if ((int)arr[itr] == 0)
-        {
-            if (row % 2 != 0)
-                arr[itr] = (arr[itr-1] + arr[itr+1])/2;
-            else
-                arr[itr] = (arr[itr-max_width] + arr[itr+max_width])/2;
-        }
-    }
-    for (int itr = 0; itr < max_width; itr++) //first row
-    {
-        arr[itr] = arr[itr + max_width];
-    }
-    for (int itr = 0; itr < totalPix; itr += max_width) //first column
-    {
-        arr[itr] = arr[itr+1];
-    }
- }
-
-void Demosaic::Red(uint8_t* arr)
-{
-    int row;
-    for (int itr = 0; itr < totalPix-max_width; itr++)
-    {
-        row = itr / max_width;
-        if ((int)arr[itr] == 0)
-        {
-            if (row % 2 == 0)
-                arr[itr] = (arr[itr-1] + arr[itr+1])/2;
-            else
-                arr[itr] = (arr[itr-max_width] + arr[itr+max_width])/2;
-        }
-    }
-    for (int itr = 1; itr <= max_width; itr++) //last row
-    {
-        arr[totalPix - itr] = arr[totalPix - itr - max_width];
-    }
-
-    for (int itr = max_width-1; itr < totalPix; itr += max_width) //last column
-    {
-        arr[itr] = arr[itr-1];
-    }
- }
