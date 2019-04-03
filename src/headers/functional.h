@@ -5,7 +5,6 @@
 #include <cstdint>
 #include <cstdlib>
 #include <string>
-#include <vector>
 
 #define max_width 4096
 #define max_height 3072
