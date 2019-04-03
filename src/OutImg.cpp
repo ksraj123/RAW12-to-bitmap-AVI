@@ -1,6 +1,6 @@
 #include "headers/OutImg.h"
 
-void WritePpm(unsigned char* arr, std::string chanel_name)
+void WritePpm(uint8_t* arr, std::string chanel_name)
 {
     std::string output_file_name = "result/" + chanel_name + ".ppm";
     std::ofstream channel;
@@ -16,14 +16,15 @@ void WritePpm(unsigned char* arr, std::string chanel_name)
     {
         switch(chanel_name[0])
         {
+            // elements of the array get written to file as characters without casting
             case 'r':
-                channel << (int)arr[itr] << " 0 0";
+                channel << static_cast<int>(arr[itr]) << " 0 0";
                 break;
             case 'g':
-                channel << "0 " << (int)arr[itr] << " 0";
+                channel << "0 " << static_cast<int>(arr[itr]) << " 0";
                 break;
             case 'b':
-                channel << "0 0 " << (int)arr[itr];
+                channel << "0 0 " << static_cast<int>(arr[itr]);
                 break;
         }
         if ((itr + 1) % max_width == 0)
@@ -49,17 +50,19 @@ void WriteBmp(uint8_t* arr_r, uint8_t* arr_b, uint8_t* arr_g)
         std::cerr << "Error: File cannot be opened\n\tExiting\n";
         exit(1);
     }
-    file.write((char*)&flleHeader, sizeof(flleHeader));
-    file.write((char*)&infoHeader, sizeof(infoHeader));
+
+    file.write(reinterpret_cast<const char*>(&flleHeader), sizeof(flleHeader));
+    file.write(reinterpret_cast<const char*>(&infoHeader), sizeof(infoHeader));
     for (int row = max_height-1; row >= 0; row--)
     {
         for (int col = row * max_width; col < (row+1)*max_width; col++)
         {
-            file.write((char*)&arr_b[col], sizeof(uint8_t));
-            file.write((char*)&arr_g[col], sizeof(uint8_t));
-            file.write((char*)&arr_r[col], sizeof(uint8_t));
+            file.write(reinterpret_cast<const char*>(&arr_b[col]), sizeof(uint8_t));
+            file.write(reinterpret_cast<const char*>(&arr_g[col]), sizeof(uint8_t));
+            file.write(reinterpret_cast<const char*>(&arr_r[col]), sizeof(uint8_t));
         }
     }
+
     file.close();
     if (!file)
     {
