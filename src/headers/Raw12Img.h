@@ -7,18 +7,6 @@
 #define inputSize (4096 * 3072 * 3 / 2)
 #define totalPix (4096 * 3072)
 
-class Raw12Img
-{
-    std::string m_fileName;
-
-    public:
-    Raw12Img (std::string);
-    void Load();
-    void DebayerChannels();
-    void WriteChannels();
-    void WriteDebayered();
-};
-
 class Channels
 {
     public:
@@ -43,6 +31,19 @@ class Channels
         blue[index] = b;
         index++;
     }
+};
+
+class Raw12Img
+{
+    std::string m_fileName;
+
+    public:
+    Channels chnl;
+    Raw12Img (std::string);
+    void Load();
+    void DebayerChannels();
+    void WriteChannels();
+    void WriteDebayered();
 };
 
 #endif
