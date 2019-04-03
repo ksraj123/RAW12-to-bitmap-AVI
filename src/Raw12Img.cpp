@@ -2,8 +2,6 @@
 #define Sensel(A, B) ((A & 0x0F) << 4 | (B & 0xF0) >> 4)
 #include <endian.h>
 
-Channels chnl;
-
 Raw12Img::Raw12Img(std::string t_fileName)
             : m_fileName(t_fileName)
 {
