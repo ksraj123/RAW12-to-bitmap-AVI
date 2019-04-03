@@ -38,6 +38,7 @@ void Raw12Img::Load()
 
 void Raw12Img::DebayerChannels()
 {
+    // Calling methods in namespace Demosaic
     Demosaic::Type1(chnl.red, 1);
     Demosaic::Type2(chnl.green);
     Demosaic::Type1(chnl.blue, 0);
