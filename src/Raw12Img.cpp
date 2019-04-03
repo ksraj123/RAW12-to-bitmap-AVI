@@ -3,7 +3,6 @@
 #include <endian.h>
 
 Channels chnl;
-char* fileData;
 
 Raw12Img::Raw12Img(std::string t_fileName)
             : m_fileName(t_fileName)
@@ -19,20 +18,19 @@ void Raw12Img::Load()
         std::cerr << "Error: File cannot be opened\b\tExiting" << std::endl;
         exit(1);
     }
-    fileData = new char [inputSize];
-    intputFile.read(fileData, inputSize);
+    intputFile.read(chnl.fileData, inputSize);
     for (int itr = 0; itr < inputSize; itr+= 3)
     {
         int row = (itr * 2) / (max_width * 3);
         if (row % 2 == 0)
         {
-        chnl.Push(fileData[itr], 0, 0);
-        chnl.Push(0, Sensel(fileData[itr+1], fileData[itr+2]), 0);
+            chnl.Push(chnl.fileData[itr], 0, 0);
+            chnl.Push(0, Sensel(chnl.fileData[itr+1], chnl.fileData[itr+2]), 0);
         }
         else
         {
-            chnl.Push(0, fileData[itr], 0);
-            chnl.Push(0, 0, Sensel(fileData[itr+1], fileData[itr+2]));
+            chnl.Push(0, chnl.fileData[itr], 0);
+            chnl.Push(0, 0, Sensel(chnl.fileData[itr+1], chnl.fileData[itr+2]));
         }
     }
     intputFile.close();
@@ -40,19 +38,19 @@ void Raw12Img::Load()
 
 void Raw12Img::DebayerChannels()
 {
-    Demosaic::Red(chnl.red);
-    Demosaic::Green(chnl.green);
-    Demosaic::Blue(chnl.blue);
+    Demosaic::Type1(chnl.red, 1);
+    Demosaic::Type2(chnl.green);
+    Demosaic::Type1(chnl.blue, 0);
 }
 
 void Raw12Img::WriteChannels()
 {
-    OutputImage::PixelMap::Write(chnl.red, "red");
-    OutputImage::PixelMap::Write(chnl.green, "green");
-    OutputImage::PixelMap::Write(chnl.blue, "blue");
+    WritePpm(chnl.red, "red");
+    WritePpm(chnl.green, "green");
+    WritePpm(chnl.blue, "blue");
 }
 
 void Raw12Img::WriteDebayered()
 {
-    OutputImage::bitmap::Write(chnl.red, chnl.blue, chnl.green);
+    WriteBmp(chnl.red, chnl.blue, chnl.green);
 }
