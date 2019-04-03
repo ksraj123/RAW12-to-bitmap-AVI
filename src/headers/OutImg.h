@@ -7,7 +7,12 @@ void WritePpm(uint8_t* arr, std::string);
 
 void WriteBmp(uint8_t* arr_r, uint8_t* arr_b, uint8_t* arr_g);
 
-#pragma pack(push, 2)
+#ifndef WIN32
+#define GCC_PACK __attribute__((packed))
+#else
+#define GCC_PACK
+#pragma pack(push,2)
+#endif
 
 struct BitmapFileHeader
 {
@@ -15,7 +20,8 @@ struct BitmapFileHeader
     std::int32_t fileSize;
     std::int32_t reserved {0};
     std::int32_t dataOffset;
-};
+} GCC_PACK ;
+
 struct BitmapInfoHeader
 {
     std::int32_t headerSize {40};
@@ -29,7 +35,10 @@ struct BitmapInfoHeader
     std::int32_t verticalResolution {2400};
     std::int32_t colours{0};
     std::int32_t importantColors {0};
-};
+} GCC_PACK ;
 
+#ifdef _WIN32
 #pragma pack(pop)
+#endif
+
 #endif // BMP_HEAD
