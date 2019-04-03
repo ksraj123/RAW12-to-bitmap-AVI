@@ -18,6 +18,9 @@ int main()
     std::cout << "Writing debayered BMP Image to results/ \n";
     InputImg.WriteDebayered();
 
+    std::cout << "Writing debayed Image into a single frame AVI\n";
+    InputImg.WriteAVI();
+
     std::cout << "Please check results folder after sometime for output images\n";
     std::cout << "!!!!Thank you for using my program!!!!";
 }
