@@ -28,7 +28,7 @@ void WritePpm(uint8_t* arr, std::string chanel_name)
                 break;
         }
         if ((itr + 1) % max_width == 0)
-            channel << "\n";
+            channel << std::endl;
         else
             channel << " ";
     }
