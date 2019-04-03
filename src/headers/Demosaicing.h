@@ -2,7 +2,6 @@
 
 namespace Demosaic
 {
-    void Green(unsigned char* arr);
-    void Blue(unsigned char* arr);
-    void Red(unsigned char* arr);
+    void Type1(uint8_t*, int);
+    void Type2(uint8_t*);
 }
