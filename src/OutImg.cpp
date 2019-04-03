@@ -1,86 +1,72 @@
-#include "headers/Raw12Img.h"
-#define Sensel(A, B) ((A & 0x0F) << 4 | (B & 0xF0) >> 4)
-#include <endian.h>
+#include "headers/OutImg.h"
 
-// constructor of class Channels
-Channels::Channels()
+void WritePpm(uint8_t* arr, std::string chanel_name)
 {
-    red = new uint8_t[2*totalPix]{0};
-    blue = new uint8_t[2*totalPix]{0};
-    green = new uint8_t[2*totalPix]{0};
-    fileData = new char [2*inputSize]{0};
-}
-
-// member fuction of class Channels
-void Channels::Push(uint8_t r, uint8_t g, uint8_t b)
-{
-    static int index = 0;
-    red[index] = r;
-    green[index] = g;
-    blue[index] = b;
-    index++;
-}
-
-// constructor of class Raw12Img
-Raw12Img::Raw12Img(std::string filePath)
-            : _filePath(filePath)
-{
-    _intputFile.open(_filePath, std::ios::binary);
-    if(!_intputFile)
+    std::string output_file_name = "result/" + chanel_name + ".ppm";
+    std::ofstream channel;
+    channel.open(output_file_name.c_str(), std::ios::out | std::ios::trunc);
+    if(!channel)
     {
-        std::cerr << "Error: File cannot be opened\b\tExiting" << std::endl;
+        std::cerr << "Error: File cannot be opened\n\tExiting\n";
         exit(1);
     }
+    channel << "P3\n" << "# " << chanel_name << ".ppm\n" << max_width
+            << " " << max_height << "\n" << "255" << "\n";
+    for (int itr = 0; itr < totalPix; itr++)
+    {
+        switch(chanel_name[0])
+        {
+            // elements of the array get written to file as characters without casting
+            case 'r':
+                channel << static_cast<int>(arr[itr]) << " 0 0";
+                break;
+            case 'g':
+                channel << "0 " << static_cast<int>(arr[itr]) << " 0";
+                break;
+            case 'b':
+                channel << "0 0 " << static_cast<int>(arr[itr]);
+                break;
+        }
+        if ((itr + 1) % max_width == 0)
+            channel << std::endl;
+        else
+            channel << " ";
+    }
+    channel.close();
 }
 
-// member fuction of class Raw12Img
-void Raw12Img::Load()
+void WriteBmp(uint8_t* arr_r, uint8_t* arr_b, uint8_t* arr_g)
 {
-    _intputFile.read(chnl.fileData, inputSize);
-    for (int itr = 0; itr < inputSize; itr+= 3)
+    BitmapFileHeader flleHeader;
+    BitmapInfoHeader infoHeader;
+    flleHeader.fileSize = sizeof(BitmapFileHeader)
+                        + sizeof(BitmapInfoHeader)
+                        + max_width * max_height * 3;
+    flleHeader.dataOffset = sizeof(BitmapFileHeader) + sizeof(BitmapInfoHeader);
+    std::ofstream file;
+    file.open("result/BMP_output.bmp", std::ios::binary);
+    if(!file)
     {
-        int row = (itr * 2) / (max_width * 3);
-        if (row % 2 == 0)
+        std::cerr << "Error: File cannot be opened\n\tExiting\n";
+        exit(1);
+    }
+
+    file.write(reinterpret_cast<const char*>(&flleHeader), sizeof(flleHeader));
+    file.write(reinterpret_cast<const char*>(&infoHeader), sizeof(infoHeader));
+    for (int row = max_height-1; row >= 0; row--)
+    {
+        for (int col = row * max_width; col < (row+1)*max_width; col++)
         {
-            chnl.Push(chnl.fileData[itr], 0, 0);
-            chnl.Push(0, Sensel(chnl.fileData[itr+1], chnl.fileData[itr+2]), 0);
-        }
-        else
-        {
-            chnl.Push(0, chnl.fileData[itr], 0);
-            chnl.Push(0, 0, Sensel(chnl.fileData[itr+1], chnl.fileData[itr+2]));
+            file.write(reinterpret_cast<const char*>(&arr_b[col]), sizeof(uint8_t));
+            file.write(reinterpret_cast<const char*>(&arr_g[col]), sizeof(uint8_t));
+            file.write(reinterpret_cast<const char*>(&arr_r[col]), sizeof(uint8_t));
         }
     }
-    _intputFile.close();
-}
 
-// member fuction of class Raw12Img
-void Raw12Img::DebayerChannels()
-{
-    // Calling methods in namespace Demosaic
-    Demosaic::Type1(chnl.red, 1);
-    Demosaic::Type2(chnl.green);
-    Demosaic::Type1(chnl.blue, 0);
-}
-
-// member fuction of class Raw12Img
-void Raw12Img::WriteChannels()
-{
-    // WritePpm() declared in headers/OutImg.h
-    WritePpm(chnl.red, "red");
-    WritePpm(chnl.green, "green");
-    WritePpm(chnl.blue, "blue");
-}
-
-// member fuction of class Raw12Img
-void Raw12Img::WriteDebayered()
-{
-    // WriteBmp() declared in headers/OutImg.h
-    WriteBmp(chnl.red, chnl.blue, chnl.green);
-}
-
-
-void Raw12Img::WriteAVI()
-{
-    WriteToAvi(chnl.red, chnl.blue, chnl.green);
+    file.close();
+    if (!file)
+    {
+        std::cerr << "Error: File cannot be Closed\n\tExiting\n";
+        exit(1);
+    }
 }
