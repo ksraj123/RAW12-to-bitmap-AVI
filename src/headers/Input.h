@@ -2,7 +2,6 @@
 #define Raw12Img_H
 
 #include "functional.h"
-#include "Demosaicing.h"
 #define inputSize (4096 * 3072 * 3 / 2)
 #define totalPix (4096 * 3072)
 

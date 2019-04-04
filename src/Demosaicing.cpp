@@ -3,10 +3,6 @@
 
 // Bilinear Interpolation approach
 
-// This fuction demosaics red and blue channels
-// the approach to demosaicing red and blue channels
-// are similar hence they are delt with in one fuction
-
 void Demosaic::DemosaicChannels(InputImage* input)
 {
     std::cout << "Demosaicing Red channel\n";
@@ -17,6 +13,9 @@ void Demosaic::DemosaicChannels(InputImage* input)
     Type1(input->GetBlueChannel(), 0);
 }
 
+// This fuction demosaics red and blue channels
+// the approach to demosaicing red and blue channels
+// are similar hence they are delt with in one fuction
 void Demosaic::Type1(uint8_t* arr, int start)
 {
     int row;
