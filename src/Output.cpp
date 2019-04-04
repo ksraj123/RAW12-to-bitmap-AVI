@@ -20,37 +20,37 @@ void OutputImage::WriteOutput(InputImage* input)
     WriteToAvi(input->GetRedChannel(), input->GetBlueChannel(), input->GetGreenChannel());
 }
 
-void OutputImage::WritePpm(uint8_t* arr, std::string chanel_name)
+void OutputImage::WritePpm(uint8_t* arr, std::string chanelName)
 {
-    std::string output_file_name = "result/" + chanel_name + ".ppm";
-    file.open(output_file_name.c_str(), std::ios::out | std::ios::trunc);
+    std::string outputFileName = "result/" + chanelName + ".ppm";
+    file.open(outputFileName, std::ios::out | std::ios::trunc);
     if(!file)
     {
         std::cerr << "Error: File cannot be opened\n\tExiting\n";
         exit(1);
     }
-    file << "P3\n" << "# " << chanel_name << ".ppm\n" << max_width
+    file << "P6\n" << "# " << chanelName << ".ppm\n" << max_width
             << " " << max_height << "\n" << "255" << "\n";
-    for (int itr = 0; itr < totalPix; itr++)
+
+    uint8_t* ppmBin = new uint8_t[3*totalPix]{0};
+
+    for (int itr_arr = 0, itr = 0; itr_arr < 3*totalPix, itr < totalPix; itr_arr += 3, itr++)
     {
-        switch(chanel_name[0])
+        switch (chanelName[0])
         {
-            // elements of the array get written to file as characters without casting
             case 'r':
-                file << static_cast<int>(arr[itr]) << " 0 0";
+                ppmBin[itr_arr] = arr[itr];
                 break;
             case 'g':
-                file << "0 " << static_cast<int>(arr[itr]) << " 0";
+                ppmBin[itr_arr+1] = arr[itr];
                 break;
             case 'b':
-                file << "0 0 " << static_cast<int>(arr[itr]);
+                ppmBin[itr_arr+2] = arr[itr];
                 break;
         }
-        if ((itr + 1) % max_width == 0)
-            file << std::endl;
-        else
-            file << " ";
+            
     }
+    file.write(reinterpret_cast<const char*> (ppmBin), totalPix*3);
     file.close();
 }
 

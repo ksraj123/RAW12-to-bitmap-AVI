@@ -5,10 +5,12 @@
 InputImage::InputImage(std::string filePath)
              : _filePath(filePath)
 {
-    red = new uint8_t[2*totalPix]{0};
-    blue = new uint8_t[2*totalPix]{0};
-    green = new uint8_t[2*totalPix]{0};
-    fileData = new char [2*inputSize]{0};
+    red = new uint8_t[totalPix]{0};
+    blue = new uint8_t[totalPix]{0};
+    green = new uint8_t[totalPix]{0};
+    fileData = new char [inputSize]{0};
+    //arr = new uint8_t[4*totalPix]{0};
+
     _intputFile.open(_filePath, std::ios::binary);
     if(!_intputFile)
     {

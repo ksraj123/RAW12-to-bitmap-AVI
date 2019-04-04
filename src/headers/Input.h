@@ -14,7 +14,9 @@ class InputImage
     std::string _filePath;
     std::ifstream _intputFile;
 
+
 public:
+    uint8_t* arr;
     InputImage(std::string);
     void Push(uint8_t, uint8_t, uint8_t);
     void Load();
