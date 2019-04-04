@@ -3,7 +3,7 @@ all: apertus
 apertus: main.o Raw12Img.o OutImg.o Demosaicing.o riffAVI.o
 	g++ -o apertus main.o Raw12Img.o OutImg.o Demosaicing.o riffAVI.o
 
-main.o: main.cpp
+main.o: main.cpp src/headers/functional.h
 	g++ -c main.cpp
 
 OutImg.o: src/OutImg.cpp src/headers/OutImg.h src/headers/functional.h
