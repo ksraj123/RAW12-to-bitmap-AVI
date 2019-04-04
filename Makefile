@@ -24,4 +24,4 @@ clean:
 	rm -f *.o src/*.o apertus 
 
 clean_results:
-	rm -f result/*.ppm result/*.bmp
+	rm -f result/*.ppm result/*.bmp result/*.avi
