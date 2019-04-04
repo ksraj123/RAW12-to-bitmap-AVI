@@ -1,26 +1,24 @@
 #include "src/headers/functional.h"
 #include "src/headers/Raw12Img.h"
+#include "src/headers/Demosaicing.h"
+#include "src/headers/OutImg.h"
 
 int main()
 {
-    Raw12Img InputImg("test_image/test_image.raw12");
-
     std::cout << "//////// !!!! KUMAR SAURABH RAJ !!!!///////\n";
+
+    InputImage InputImg("test_image/test_image.raw12");
     std::cout << "Loading Raw12Image\n";
     InputImg.Load();
 
     std::cout << "Debayering channels\n";
-    InputImg.DebayerChannels();
+    Demosaic demo;
+    demo.DemosaicChannels(&InputImg);
 
-    std::cout << "Writing chaneels to results/ \n";
-    InputImg.WriteChannels();
-
-    std::cout << "Writing debayered BMP Image to results/ \n";
-    InputImg.WriteDebayered();
-
-    std::cout << "Writing debayed Image into a single frame AVI\n";
-    InputImg.WriteAVI();
+    OutputImage OutImg; 
+    std::cout << "Writing output/ \n";
+    OutImg.WriteOutput(&InputImg);
 
     std::cout << "Please check results folder after sometime for output images\n";
-    std::cout << "!!!!Thank you for using my program!!!!";
+    std::cout << "!!!!Thank you for using my program!!!!\n";
 }

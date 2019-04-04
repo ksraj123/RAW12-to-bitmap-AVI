@@ -1,30 +1,18 @@
 #include "headers/Raw12Img.h"
+#include "headers/OutImg.h"
 #define Sensel(A, B) ((A & 0x0F) << 4 | (B & 0xF0) >> 4)
 #include <endian.h>
 
+OutputImage output;
+
 // constructor of class Channels
-Channels::Channels()
+InputImage::InputImage(std::string filePath)
+             : _filePath(filePath)
 {
     red = new uint8_t[2*totalPix]{0};
     blue = new uint8_t[2*totalPix]{0};
     green = new uint8_t[2*totalPix]{0};
     fileData = new char [2*inputSize]{0};
-}
-
-// member fuction of class Channels
-void Channels::Push(uint8_t r, uint8_t g, uint8_t b)
-{
-    static int index = 0;
-    red[index] = r;
-    green[index] = g;
-    blue[index] = b;
-    index++;
-}
-
-// constructor of class Raw12Img
-Raw12Img::Raw12Img(std::string filePath)
-            : _filePath(filePath)
-{
     _intputFile.open(_filePath, std::ios::binary);
     if(!_intputFile)
     {
@@ -33,54 +21,50 @@ Raw12Img::Raw12Img(std::string filePath)
     }
 }
 
-// member fuction of class Raw12Img
-void Raw12Img::Load()
+// member fuction of class Channels
+void InputImage::Push(uint8_t r, uint8_t g, uint8_t b)
 {
-    _intputFile.read(chnl.fileData, inputSize);
+    static int index = 0;
+    red[index] = r;
+    green[index] = g;
+    blue[index] = b;
+    index++;
+}
+
+// member fuction of class Raw12Img
+void InputImage::Load()
+{
+    _intputFile.read(fileData, inputSize);
     for (int itr = 0; itr < inputSize; itr+= 3)
     {
         int row = (itr * 2) / (max_width * 3);
         if (row % 2 == 0)
         {
-            chnl.Push(chnl.fileData[itr], 0, 0);
-            chnl.Push(0, Sensel(chnl.fileData[itr+1], chnl.fileData[itr+2]), 0);
+            Push(fileData[itr], 0, 0);
+            Push(0, Sensel(fileData[itr+1], fileData[itr+2]), 0);
         }
         else
         {
-            chnl.Push(0, chnl.fileData[itr], 0);
-            chnl.Push(0, 0, Sensel(chnl.fileData[itr+1], chnl.fileData[itr+2]));
+            Push(0, fileData[itr], 0);
+            Push(0, 0, Sensel(fileData[itr+1], fileData[itr+2]));
         }
     }
     _intputFile.close();
 }
 
-// member fuction of class Raw12Img
-void Raw12Img::DebayerChannels()
+uint8_t* InputImage::GetRedChannel()
 {
-    // Calling methods in namespace Demosaic
-    Demosaic::Type1(chnl.red, 1);
-    Demosaic::Type2(chnl.green);
-    Demosaic::Type1(chnl.blue, 0);
+    return red;
+}
+
+uint8_t* InputImage::GetBlueChannel()
+{
+    return blue;
+}
+
+uint8_t* InputImage::GetGreenChannel()
+{
+    return green;
 }
 
 // member fuction of class Raw12Img
-void Raw12Img::WriteChannels()
-{
-    // WritePpm() declared in headers/OutImg.h
-    WritePpm(chnl.red, "red");
-    WritePpm(chnl.green, "green");
-    WritePpm(chnl.blue, "blue");
-}
-
-// member fuction of class Raw12Img
-void Raw12Img::WriteDebayered()
-{
-    // WriteBmp() declared in headers/OutImg.h
-    WriteBmp(chnl.red, chnl.blue, chnl.green);
-}
-
-
-void Raw12Img::WriteAVI()
-{
-    WriteToAvi(chnl.red, chnl.blue, chnl.green);
-}

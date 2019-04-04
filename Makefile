@@ -1,16 +1,13 @@
 all: apertus
 
-apertus: main.o Raw12Img.o OutImg.o Demosaicing.o riffAVI.o
-	g++ -o apertus main.o Raw12Img.o OutImg.o Demosaicing.o riffAVI.o
+apertus: main.o Raw12Img.o OutImg.o Demosaicing.o
+	g++ -o apertus main.o Raw12Img.o OutImg.o Demosaicing.o
 
 main.o: main.cpp src/headers/functional.h
 	g++ -c main.cpp
 
 OutImg.o: src/OutImg.cpp src/headers/OutImg.h src/headers/functional.h
 	g++ -c src/OutImg.cpp
-
-riffAVI.o: src/riffAVI.cpp src/headers/riffAVI.h src/headers/functional.h
-	g++ -c src/riffAVI.cpp
 
 Demosaicing.o: src/Demosaicing.cpp src/headers/Demosaicing.h src/headers/functional.h
 	g++ -c src/Demosaicing.cpp
