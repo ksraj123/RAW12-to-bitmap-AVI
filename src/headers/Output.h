@@ -3,7 +3,7 @@
 #define OUTPUT_IMAGE
 
 #include "functional.h"
-#include "Raw12Img.h"
+#include "Input.h"
 #include "OutStructs.h"
 
 class InputImage;

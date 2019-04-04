@@ -1,9 +1,7 @@
-#include "headers/Raw12Img.h"
-#include "headers/OutImg.h"
+#include "headers/Input.h"
+#include "headers/Output.h"
 #define Sensel(A, B) ((A & 0x0F) << 4 | (B & 0xF0) >> 4)
 #include <endian.h>
-
-OutputImage output;
 
 // constructor of class Channels
 InputImage::InputImage(std::string filePath)

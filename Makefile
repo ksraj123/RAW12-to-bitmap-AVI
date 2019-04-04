@@ -1,19 +1,19 @@
 all: apertus
 
-apertus: main.o Raw12Img.o OutImg.o Demosaicing.o
-	g++ -o apertus main.o Raw12Img.o OutImg.o Demosaicing.o
+apertus: main.o Input.o Output.o Demosaicing.o
+	g++ -o apertus main.o Input.o Output.o Demosaicing.o
 
 main.o: main.cpp src/headers/functional.h
 	g++ -c main.cpp
 
-OutImg.o: src/OutImg.cpp src/headers/OutImg.h src/headers/functional.h
-	g++ -c src/OutImg.cpp
+Output.o: src/Output.cpp src/headers/Output.h src/headers/functional.h
+	g++ -c src/Output.cpp
 
 Demosaicing.o: src/Demosaicing.cpp src/headers/Demosaicing.h src/headers/functional.h
 	g++ -c src/Demosaicing.cpp
 
-Raw12Img.o: src/Raw12Img.cpp src/headers/Raw12Img.h src/headers/functional.h
-	g++ -c src/Raw12Img.cpp
+Input.o: src/Input.cpp src/headers/Input.h src/headers/functional.h
+	g++ -c src/Input.cpp
 
 clean_all: clean clean_results
 

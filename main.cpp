@@ -1,7 +1,7 @@
 #include "src/headers/functional.h"
-#include "src/headers/Raw12Img.h"
+#include "src/headers/Input.h"
 #include "src/headers/Demosaicing.h"
-#include "src/headers/OutImg.h"
+#include "src/headers/Output.h"
 
 int main()
 {

@@ -1,4 +1,4 @@
-#include "headers/OutImg.h"
+#include "headers/Output.h"
 
 void OutputImage::WriteOutput(InputImage* input)
 {

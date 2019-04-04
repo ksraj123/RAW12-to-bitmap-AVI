@@ -2,7 +2,7 @@
 #define DEMOSAIC_H
 
 #include "functional.h"
-#include "Raw12Img.h"
+#include "Input.h"
 
 class InputImage;
 
