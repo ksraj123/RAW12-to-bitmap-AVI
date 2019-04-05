@@ -21,8 +21,9 @@ class OutputImage
     void WriteOutput(InputImage*);
     void WritePpm(uint8_t*, std::string);
     void WritePpmRed(uint8_t*, std::string);
-    void WriteBmp(uint8_t*, uint8_t*, uint8_t*);
-    void WriteToAvi(uint8_t*, uint8_t*, uint8_t*);
+    void WriteBmp(uint8_t*);
+    void WriteToAvi(uint8_t*);
+    uint8_t* GetBmpBinary(uint8_t*, uint8_t*, uint8_t*);
 };
 
 #endif // BMP_HEAD

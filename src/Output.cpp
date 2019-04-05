@@ -13,11 +13,14 @@ void OutputImage::WriteOutput(InputImage* input)
     std::cout << "Writing Blue Channel\n";
     WritePpm(input->GetBlueChannel(), "blue");
     
+    uint8_t* bmpBinary = GetBmpBinary(input->GetRedChannel(), 
+                                      input->GetBlueChannel(), 
+                                      input->GetGreenChannel());
     std::cout << "Writing Debayered BMP image\n";
-    WriteBmp(input->GetRedChannel(), input->GetBlueChannel(), input->GetGreenChannel());
+    WriteBmp(bmpBinary);
     
     std::cout << "Writing Debayered Image into AVI\n";
-    WriteToAvi(input->GetRedChannel(), input->GetBlueChannel(), input->GetGreenChannel());
+    WriteToAvi(bmpBinary);
 }
 
 void OutputImage::WritePpm(uint8_t* arr, std::string chanelName)
@@ -51,10 +54,11 @@ void OutputImage::WritePpm(uint8_t* arr, std::string chanelName)
             
     }
     file.write(reinterpret_cast<const char*> (ppmBin), totalPix*3);
+    delete ppmBin;
     file.close();
 }
 
-void OutputImage::WriteBmp(uint8_t* arr_r, uint8_t* arr_b, uint8_t* arr_g)
+void OutputImage::WriteBmp(uint8_t* bmpBinary)
 {
     flleHeader.fileSize = sizeof(BitmapFileHeader)
                         + sizeof(BitmapInfoHeader)
@@ -70,15 +74,7 @@ void OutputImage::WriteBmp(uint8_t* arr_r, uint8_t* arr_b, uint8_t* arr_g)
 
     file.write(reinterpret_cast<const char*>(&flleHeader), sizeof(flleHeader));
     file.write(reinterpret_cast<const char*>(&infoHeader), sizeof(infoHeader));
-    for (int row = max_height-1; row >= 0; row--)
-    {
-        for (int col = row * max_width; col < (row+1)*max_width; col++)
-        {
-            file.write(reinterpret_cast<const char*>(&arr_b[col]), sizeof(uint8_t));
-            file.write(reinterpret_cast<const char*>(&arr_g[col]), sizeof(uint8_t));
-            file.write(reinterpret_cast<const char*>(&arr_r[col]), sizeof(uint8_t));
-        }
-    }
+    file.write(reinterpret_cast<const char*>(bmpBinary), 3*totalPix);
 
     file.close();
     if (!file)
@@ -88,7 +84,7 @@ void OutputImage::WriteBmp(uint8_t* arr_r, uint8_t* arr_b, uint8_t* arr_g)
     }
 }
 
-void OutputImage::WriteToAvi(uint8_t* arr_r, uint8_t* arr_b, uint8_t* arr_g)
+void OutputImage::WriteToAvi(uint8_t* bmpBinary)
 {
     std::ofstream file;
     file.open("result/AVI_output.avi", std::ios::binary);
@@ -142,15 +138,7 @@ void OutputImage::WriteToAvi(uint8_t* arr_r, uint8_t* arr_b, uint8_t* arr_g)
 
     file.write("00db", 4); //uncompressed video frame
     file.write(reinterpret_cast<const char*>(&size_pix), 4);
-    for (int row = max_height-1; row >= 0; row--)
-    {
-        for (int col = row * max_width; col < (row+1)*max_width; col++)
-        {
-            file.write(reinterpret_cast<const char*>(&arr_b[col]), sizeof(uint8_t));
-            file.write(reinterpret_cast<const char*>(&arr_g[col]), sizeof(uint8_t));
-            file.write(reinterpret_cast<const char*>(&arr_r[col]), sizeof(uint8_t));
-        }
-    }
+    file.write(reinterpret_cast<const char*>(bmpBinary), 3*totalPix);
 
     file.close();
     if (!file)
@@ -158,4 +146,21 @@ void OutputImage::WriteToAvi(uint8_t* arr_r, uint8_t* arr_b, uint8_t* arr_g)
         std::cerr << "Error: File cannot be Closed\n\tExiting\n";
         exit(1);
     }
+}
+
+uint8_t* OutputImage::GetBmpBinary(uint8_t* arr_r, uint8_t* arr_b, uint8_t* arr_g)
+{
+    uint8_t* bmpBin = new uint8_t [totalPix*3];
+
+    for (int row = max_height-1, itr = 0; row >= 0; row--)
+    {
+        for (int col = row * max_width; col < (row+1)*max_width; col++)
+        {
+            bmpBin[itr] = arr_b[col];
+            bmpBin[itr+1] = arr_g[col];
+            bmpBin[itr+2] = arr_r[col];
+            itr+=3;
+        }
+    }
+    return bmpBin;
 }
