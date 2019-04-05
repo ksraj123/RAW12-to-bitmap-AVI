@@ -22,8 +22,8 @@ void OutputImage::WritePpm(std::string chanelName)
         std::cerr << "Error: File cannot be opened\n\tExiting\n";
         exit(1);
     }
-    file << "P6\n" << "# " << chanelName << ".ppm\n" << max_width
-            << " " << max_height << "\n" << "255" << "\n";
+    file << "P6\n" << "# " << chanelName << ".ppm\n" << MAX_WIDTH
+            << " " << MAX_HEIGHT << "\n" << "255" << "\n";
 
     uint8_t* ppmBin;
     switch (chanelName[0])
@@ -39,7 +39,7 @@ void OutputImage::WritePpm(std::string chanelName)
                 break;
         }
 
-    file.write(reinterpret_cast<const char*> (ppmBin), totalPix*3);
+    file.write(reinterpret_cast<const char*> (ppmBin), TOTAL_PIX*3);
     delete ppmBin;
     file.close();
 }
@@ -48,7 +48,7 @@ void OutputImage::WriteBmp()
 {
     flleHeader.fileSize = sizeof(BitmapFileHeader)
                         + sizeof(BitmapInfoHeader)
-                        + max_width * max_height * 3;
+                        + MAX_WIDTH * MAX_HEIGHT * 3;
     flleHeader.dataOffset = sizeof(BitmapFileHeader) + sizeof(BitmapInfoHeader);
 
     file.open("result/BMP_output.bmp", std::ios::binary);
@@ -60,7 +60,7 @@ void OutputImage::WriteBmp()
 
     file.write(reinterpret_cast<const char*>(&flleHeader), sizeof(flleHeader));
     file.write(reinterpret_cast<const char*>(&infoHeader), sizeof(infoHeader));
-    file.write(reinterpret_cast<const char*>(bmpBinary), 3*totalPix);
+    file.write(reinterpret_cast<const char*>(bmpBinary), 3*TOTAL_PIX);
 
     file.close();
     if (!file)
@@ -80,7 +80,7 @@ void OutputImage::WriteToAvi()
         exit(1);
     }
 
-    uint32_t size_pix = max_width * max_height * 3;
+    uint32_t size_pix = MAX_WIDTH * MAX_HEIGHT * 3;
     uint32_t size_rec = 3*4 + size_pix;
     uint32_t size_movi = 3*4 + size_rec;
     uint32_t size_strl = 3*4 + sizeof(StreamHeader) + 2*4 + sizeof(StreamFormat);
@@ -124,7 +124,7 @@ void OutputImage::WriteToAvi()
 
     file.write("00db", 4); //uncompressed video frame
     file.write(reinterpret_cast<const char*>(&size_pix), 4);
-    file.write(reinterpret_cast<const char*>(bmpBinary), 3*totalPix);
+    file.write(reinterpret_cast<const char*>(bmpBinary), 3*TOTAL_PIX);
 
     file.close();
     if (!file)
@@ -136,9 +136,9 @@ void OutputImage::WriteToAvi()
 
 uint8_t* OutputImage::GetPpmBinary(uint8_t* arr, std::string chanelName)
 {
-    uint8_t* ppmBin = new uint8_t[3*totalPix]{0};
+    uint8_t* ppmBin = new uint8_t[3*TOTAL_PIX]{0};
 
-    for (int itr_arr = 0, itr = 0; itr_arr < 3*totalPix, itr < totalPix; itr_arr += 3, itr++)
+    for (int itr_arr = 0, itr = 0; itr_arr < 3*TOTAL_PIX, itr < TOTAL_PIX; itr_arr += 3, itr++)
     {
         switch (chanelName[0])
         {
@@ -160,11 +160,11 @@ uint8_t* OutputImage::GetPpmBinary(uint8_t* arr, std::string chanelName)
 
 uint8_t* OutputImage::GetBmpBinary(uint8_t* arr_r, uint8_t* arr_b, uint8_t* arr_g)
 {
-    uint8_t* bmpBin = new uint8_t [totalPix*3];
+    uint8_t* bmpBin = new uint8_t [TOTAL_PIX*3];
 
-    for (int row = max_height-1, itr = 0; row >= 0; row--)
+    for (int row = MAX_HEIGHT-1, itr = 0; row >= 0; row--)
     {
-        for (int col = row * max_width; col < (row+1)*max_width; col++)
+        for (int col = row * MAX_WIDTH; col < (row+1)*MAX_WIDTH; col++)
         {
             bmpBin[itr] = arr_b[col];
             bmpBin[itr+1] = arr_g[col];

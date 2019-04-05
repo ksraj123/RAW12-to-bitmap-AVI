@@ -5,10 +5,10 @@
 InputImage::InputImage(std::string filePath)
              : _filePath(filePath)
 {
-    red = new uint8_t[totalPix]{0};
-    blue = new uint8_t[totalPix]{0};
-    green = new uint8_t[totalPix]{0};
-    fileData = new char [inputSize]{0};
+    red = new uint8_t[TOTAL_PIX]{0};
+    blue = new uint8_t[TOTAL_PIX]{0};
+    green = new uint8_t[TOTAL_PIX]{0};
+    fileData = new char [INPUT_SIZE]{0};
 
     _intputFile.open(_filePath, std::ios::binary);
     if(!_intputFile)
@@ -31,10 +31,10 @@ void InputImage::Push(uint8_t r, uint8_t g, uint8_t b)
 // member fuction of class Raw12Img
 void InputImage::Load()
 {
-    _intputFile.read(fileData, inputSize);
-    for (int itr = 0; itr < inputSize; itr+= 3)
+    _intputFile.read(fileData, INPUT_SIZE);
+    for (int itr = 0; itr < INPUT_SIZE; itr+= 3)
     {
-        int row = (itr * 2) / (max_width * 3);
+        int row = (itr * 2) / (MAX_WIDTH * 3);
         if (row % 2 == 0)
         {
             Push(fileData[itr], 0, 0);

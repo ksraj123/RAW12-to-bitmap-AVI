@@ -4,10 +4,10 @@
 #include <iostream>
 #include <fstream>
 #include <cstdint>
-#define max_width 4096
-#define max_height 3072
-#define inputSize (4096 * 3072 * 3 / 2)
-#define totalPix (4096 * 3072)
+#define MAX_WIDTH 4096
+#define MAX_HEIGHT 3072
+#define INPUT_SIZE (4096 * 3072 * 3 / 2)
+#define TOTAL_PIX (4096 * 3072)
 
 class InputImage
 {
