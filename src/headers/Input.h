@@ -1,7 +1,11 @@
-#ifndef Raw12Img_H
-#define Raw12Img_H
+#ifndef INPUT_IMAGE_H
+#define INPUT_IMAGE_H
 
-#include "functional.h"
+#include <iostream>
+#include <fstream>
+#include <cstdint>
+#define max_width 4096
+#define max_height 3072
 #define inputSize (4096 * 3072 * 3 / 2)
 #define totalPix (4096 * 3072)
 
@@ -16,16 +20,12 @@ class InputImage
 
 
 public:
-    uint8_t* arr;
     InputImage(std::string);
     void Push(uint8_t, uint8_t, uint8_t);
     void Load();
     uint8_t* GetRedChannel();
     uint8_t* GetBlueChannel();
     uint8_t* GetGreenChannel();
-    void WriteChannels();
-    void WriteAVI();
-    void WriteDebayered();
 };
 
 #endif

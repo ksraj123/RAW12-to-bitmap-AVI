@@ -3,16 +3,16 @@ all: apertus
 apertus: main.o Input.o Output.o Demosaicing.o
 	g++ -o apertus main.o Input.o Output.o Demosaicing.o
 
-main.o: main.cpp src/headers/functional.h
+main.o: main.cpp
 	g++ -c main.cpp
 
-Output.o: src/Output.cpp src/headers/Output.h src/headers/functional.h
+Output.o: src/Output.cpp src/headers/Output.h
 	g++ -c src/Output.cpp
 
-Demosaicing.o: src/Demosaicing.cpp src/headers/Demosaicing.h src/headers/functional.h
+Demosaicing.o: src/Demosaicing.cpp src/headers/Demosaicing.h
 	g++ -c src/Demosaicing.cpp
 
-Input.o: src/Input.cpp src/headers/Input.h src/headers/functional.h
+Input.o: src/Input.cpp src/headers/Input.h
 	g++ -c src/Input.cpp
 
 clean_all: clean clean_results

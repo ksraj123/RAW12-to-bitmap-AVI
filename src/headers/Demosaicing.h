@@ -1,7 +1,6 @@
 #ifndef DEMOSAIC_H
 #define DEMOSAIC_H
 
-#include "functional.h"
 #include "Input.h"
 
 class InputImage;

@@ -1,29 +1,19 @@
 #include "headers/Output.h"
 
-void OutputImage::WriteOutput(InputImage* input)
+OutputImage::OutputImage(InputImage* input)
 {
-    std::cout << "Writing 8 bit PPM channels\n";
+    ppmBinRed = GetPpmBinary(input->GetRedChannel(), "red");
 
-    std::cout << "Writing Red channel\n";
-    WritePpm(input->GetRedChannel(), "red");
+    ppmBinGreen = GetPpmBinary(input->GetGreenChannel(), "green");
+
+    ppmBinBlue = GetPpmBinary(input->GetBlueChannel(), "blue");
     
-    std::cout << "Writing Green channel\n";
-    WritePpm(input->GetGreenChannel(), "green");
-    
-    std::cout << "Writing Blue Channel\n";
-    WritePpm(input->GetBlueChannel(), "blue");
-    
-    uint8_t* bmpBinary = GetBmpBinary(input->GetRedChannel(), 
-                                      input->GetBlueChannel(), 
-                                      input->GetGreenChannel());
-    std::cout << "Writing Debayered BMP image\n";
-    WriteBmp(bmpBinary);
-    
-    std::cout << "Writing Debayered Image into AVI\n";
-    WriteToAvi(bmpBinary);
+    bmpBinary = GetBmpBinary(input->GetRedChannel(), 
+                            input->GetBlueChannel(), 
+                            input->GetGreenChannel());
 }
 
-void OutputImage::WritePpm(uint8_t* arr, std::string chanelName)
+void OutputImage::WritePpm(std::string chanelName)
 {
     std::string outputFileName = "result/" + chanelName + ".ppm";
     file.open(outputFileName, std::ios::out | std::ios::trunc);
@@ -35,30 +25,26 @@ void OutputImage::WritePpm(uint8_t* arr, std::string chanelName)
     file << "P6\n" << "# " << chanelName << ".ppm\n" << max_width
             << " " << max_height << "\n" << "255" << "\n";
 
-    uint8_t* ppmBin = new uint8_t[3*totalPix]{0};
-
-    for (int itr_arr = 0, itr = 0; itr_arr < 3*totalPix, itr < totalPix; itr_arr += 3, itr++)
-    {
-        switch (chanelName[0])
+    uint8_t* ppmBin;
+    switch (chanelName[0])
         {
             case 'r':
-                ppmBin[itr_arr] = arr[itr];
+                ppmBin = ppmBinRed;
                 break;
             case 'g':
-                ppmBin[itr_arr+1] = arr[itr];
+                ppmBin = ppmBinGreen;
                 break;
             case 'b':
-                ppmBin[itr_arr+2] = arr[itr];
+                ppmBin = ppmBinBlue;
                 break;
         }
-            
-    }
+
     file.write(reinterpret_cast<const char*> (ppmBin), totalPix*3);
     delete ppmBin;
     file.close();
 }
 
-void OutputImage::WriteBmp(uint8_t* bmpBinary)
+void OutputImage::WriteBmp()
 {
     flleHeader.fileSize = sizeof(BitmapFileHeader)
                         + sizeof(BitmapInfoHeader)
@@ -84,7 +70,7 @@ void OutputImage::WriteBmp(uint8_t* bmpBinary)
     }
 }
 
-void OutputImage::WriteToAvi(uint8_t* bmpBinary)
+void OutputImage::WriteToAvi()
 {
     std::ofstream file;
     file.open("result/AVI_output.avi", std::ios::binary);
@@ -146,6 +132,30 @@ void OutputImage::WriteToAvi(uint8_t* bmpBinary)
         std::cerr << "Error: File cannot be Closed\n\tExiting\n";
         exit(1);
     }
+}
+
+uint8_t* OutputImage::GetPpmBinary(uint8_t* arr, std::string chanelName)
+{
+    uint8_t* ppmBin = new uint8_t[3*totalPix]{0};
+
+    for (int itr_arr = 0, itr = 0; itr_arr < 3*totalPix, itr < totalPix; itr_arr += 3, itr++)
+    {
+        switch (chanelName[0])
+        {
+            case 'r':
+                ppmBin[itr_arr] = arr[itr];
+                break;
+            case 'g':
+                ppmBin[itr_arr+1] = arr[itr];
+                break;
+            case 'b':
+                ppmBin[itr_arr+2] = arr[itr];
+                break;
+        }
+            
+    }
+
+    return ppmBin;
 }
 
 uint8_t* OutputImage::GetBmpBinary(uint8_t* arr_r, uint8_t* arr_b, uint8_t* arr_g)
