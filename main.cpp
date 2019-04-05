@@ -4,7 +4,7 @@
 
 int main()
 {
-    std::cout << "//////// !!!! KUMAR SAURABH RAJ !!!!///////\n";
+    std::cout << "//////// !!!! KUMAR SAURABH RAJ !!!! ///////\n";
 
     InputImage InputImg("test_image/test_image.raw12");
     std::cout << "Loading Raw12Image\n";

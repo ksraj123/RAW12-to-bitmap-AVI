@@ -30,4 +30,4 @@ public:
     uint8_t* GetPpmBinary(uint8_t*, std::string);
 };
 
-#endif // BMP_HEAD
+#endif

@@ -1,7 +1,6 @@
 #include "headers/Input.h"
 #define Sensel(A, B) ((A & 0x0F) << 4 | (B & 0xF0) >> 4)
 
-// constructor of class Channels
 InputImage::InputImage(std::string filePath)
              : _filePath(filePath)
 {
@@ -18,7 +17,6 @@ InputImage::InputImage(std::string filePath)
     }
 }
 
-// member fuction of class Channels
 void InputImage::Push(uint8_t r, uint8_t g, uint8_t b)
 {
     static int index = 0;
@@ -28,7 +26,6 @@ void InputImage::Push(uint8_t r, uint8_t g, uint8_t b)
     index++;
 }
 
-// member fuction of class Raw12Img
 void InputImage::Load()
 {
     _intputFile.read(fileData, INPUT_SIZE);
@@ -63,5 +60,3 @@ uint8_t* InputImage::GetGreenChannel()
 {
     return green;
 }
-
-// member fuction of class Raw12Img
