@@ -18,7 +18,6 @@ class InputImage
     std::string _filePath;
     std::ifstream _intputFile;
 
-
 public:
     InputImage(std::string);
     void Push(uint8_t, uint8_t, uint8_t);

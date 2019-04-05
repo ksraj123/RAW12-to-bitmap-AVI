@@ -10,11 +10,9 @@ int main()
     std::cout << "Loading Raw12Image\n";
     InputImg.Load();
 
-
     std::cout << "Debayering channels\n";
     Demosaic demo;
     demo.DemosaicChannels(&InputImg);
-
 
     std::cout << "Writing output\n";
     OutputImage OutImg(&InputImg);

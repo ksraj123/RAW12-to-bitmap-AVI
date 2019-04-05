@@ -3,11 +3,8 @@
 OutputImage::OutputImage(InputImage* input)
 {
     ppmBinRed = GetPpmBinary(input->GetRedChannel(), "red");
-
     ppmBinGreen = GetPpmBinary(input->GetGreenChannel(), "green");
-
     ppmBinBlue = GetPpmBinary(input->GetBlueChannel(), "blue");
-    
     bmpBinary = GetBmpBinary(input->GetRedChannel(), 
                             input->GetBlueChannel(), 
                             input->GetGreenChannel());
@@ -38,7 +35,6 @@ void OutputImage::WritePpm(std::string chanelName)
                 ppmBin = ppmBinBlue;
                 break;
         }
-
     file.write(reinterpret_cast<const char*> (ppmBin), TOTAL_PIX*3);
     delete ppmBin;
     file.close();
@@ -61,7 +57,6 @@ void OutputImage::WriteBmp()
     file.write(reinterpret_cast<const char*>(&flleHeader), sizeof(flleHeader));
     file.write(reinterpret_cast<const char*>(&infoHeader), sizeof(infoHeader));
     file.write(reinterpret_cast<const char*>(bmpBinary), 3*TOTAL_PIX);
-
     file.close();
     if (!file)
     {
@@ -79,7 +74,6 @@ void OutputImage::WriteToAvi()
         std::cerr << "Error: File cannot be opened\n\tExiting\n";
         exit(1);
     }
-
     uint32_t size_pix = MAX_WIDTH * MAX_HEIGHT * 3;
     uint32_t size_rec = 3*4 + size_pix;
     uint32_t size_movi = 3*4 + size_rec;
@@ -161,7 +155,6 @@ uint8_t* OutputImage::GetPpmBinary(uint8_t* arr, std::string chanelName)
 uint8_t* OutputImage::GetBmpBinary(uint8_t* arr_r, uint8_t* arr_b, uint8_t* arr_g)
 {
     uint8_t* bmpBin = new uint8_t [TOTAL_PIX*3];
-
     for (int row = MAX_HEIGHT-1, itr = 0; row >= 0; row--)
     {
         for (int col = row * MAX_WIDTH; col < (row+1)*MAX_WIDTH; col++)

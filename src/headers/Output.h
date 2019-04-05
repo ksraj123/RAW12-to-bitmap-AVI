@@ -20,7 +20,7 @@ class OutputImage
     AVIStreamHeader StreamHeader;
     AVIStreamFormat StreamFormat;
 
-    public:
+public:
     OutputImage(InputImage*);
     void WritePpm(std::string);
     void WritePpmRed(uint8_t*, std::string);
