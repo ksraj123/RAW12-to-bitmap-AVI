@@ -65,3 +65,11 @@ uint8_t* InputImage::GetGreenChannel()
 {
     return green;
 }
+
+InputImage::~InputImage()
+{
+    delete red;
+    delete blue;
+    delete green;
+    delete fileData;
+}

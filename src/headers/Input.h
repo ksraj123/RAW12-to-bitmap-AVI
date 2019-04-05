@@ -25,6 +25,7 @@ public:
     uint8_t* GetRedChannel();
     uint8_t* GetBlueChannel();
     uint8_t* GetGreenChannel();
+    ~InputImage();
 };
 
 #endif

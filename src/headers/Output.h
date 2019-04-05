@@ -5,8 +5,6 @@
 #include "Input.h"
 #include "OutStructs.h"
 
-class InputImage;
-
 class OutputImage
 {
     uint8_t* bmpBinary;
@@ -28,6 +26,7 @@ public:
     void WriteToAvi();
     uint8_t* GetBmpBinary(uint8_t*, uint8_t*, uint8_t*);
     uint8_t* GetPpmBinary(uint8_t*, std::string);
+    ~OutputImage();
 };
 
 #endif

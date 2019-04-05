@@ -171,3 +171,12 @@ uint8_t* OutputImage::GetBmpBinary(uint8_t* arr_r, uint8_t* arr_b, uint8_t* arr_
     }
     return bmpBin;
 }
+
+
+OutputImage::~OutputImage()
+{
+    delete bmpBinary;
+    delete ppmBinRed;
+    delete ppmBinGreen;
+    delete ppmBinBlue;
+}

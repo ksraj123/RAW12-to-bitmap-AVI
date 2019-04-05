@@ -3,8 +3,6 @@
 
 #include "Input.h"
 
-class InputImage;
-
 class Demosaic
 {
 public:
