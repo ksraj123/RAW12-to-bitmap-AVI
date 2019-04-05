@@ -148,10 +148,8 @@ uint8_t* OutputImage::GetPpmBinary(uint8_t* arr, std::string chanelName)
             case 'b':
                 ppmBin[itr_arr+2] = arr[itr];
                 break;
-        }
-            
+        }      
     }
-
     return ppmBin;
 }
 
