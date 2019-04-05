@@ -13,13 +13,13 @@ OutputImage::OutputImage(InputImage* input)
 void OutputImage::WritePpm(std::string chanelName)
 {
     std::string outputFileName = "result/" + chanelName + ".ppm";
-    file.open(outputFileName, std::ios::out | std::ios::trunc);
-    if(!file)
+    outputFile.open(outputFileName, std::ios::out | std::ios::trunc);
+    if(!outputFile)
     {
         std::cerr << "Error: File cannot be opened\n\tExiting\n";
         exit(1);
     }
-    file << "P6\n" << "# " << chanelName << ".ppm\n" << MAX_WIDTH
+    outputFile << "P6\n" << "# " << chanelName << ".ppm\n" << MAX_WIDTH
             << " " << MAX_HEIGHT << "\n" << "255" << "\n";
 
     uint8_t* ppmBin = nullptr;
@@ -36,9 +36,9 @@ void OutputImage::WritePpm(std::string chanelName)
                 break;
         }
     // Entire Image written at once for enhanced performace
-    file.write(reinterpret_cast<const char*> (ppmBin), TOTAL_PIX*3);
+    outputFile.write(reinterpret_cast<const char*> (ppmBin), TOTAL_PIX*3);
     delete ppmBin;
-    file.close();
+    outputFile.close();
 }
 
 void OutputImage::WriteBmp()
@@ -48,19 +48,19 @@ void OutputImage::WriteBmp()
                         + MAX_WIDTH * MAX_HEIGHT * 3;
     flleHeader.dataOffset = sizeof(BitmapFileHeader) + sizeof(BitmapInfoHeader);
 
-    file.open("result/BMP_output.bmp", std::ios::binary);
-    if(!file)
+    outputFile.open("result/BMP_output.bmp", std::ios::binary);
+    if(!outputFile)
     {
         std::cerr << "Error: File cannot be opened\n\tExiting\n";
         exit(1);
     }
 
-    file.write(reinterpret_cast<const char*>(&flleHeader), sizeof(flleHeader));
-    file.write(reinterpret_cast<const char*>(&infoHeader), sizeof(infoHeader));
+    outputFile.write(reinterpret_cast<const char*>(&flleHeader), sizeof(flleHeader));
+    outputFile.write(reinterpret_cast<const char*>(&infoHeader), sizeof(infoHeader));
     // Entire Image written at once for enhanced performace
-    file.write(reinterpret_cast<const char*>(bmpBinary), 3*TOTAL_PIX);
-    file.close();
-    if (!file)
+    outputFile.write(reinterpret_cast<const char*>(bmpBinary), 3*TOTAL_PIX);
+    outputFile.close();
+    if (!outputFile)
     {
         std::cerr << "Error: File cannot be Closed\n\tExiting\n";
         exit(1);
@@ -69,9 +69,8 @@ void OutputImage::WriteBmp()
 
 void OutputImage::WriteToAvi()
 {
-    std::ofstream file;
-    file.open("result/AVI_output.avi", std::ios::binary);
-    if(!file)
+    outputFile.open("result/AVI_output.avi", std::ios::binary);
+    if(!outputFile)
     {
         std::cerr << "Error: File cannot be opened\n\tExiting\n";
         exit(1);
@@ -79,52 +78,52 @@ void OutputImage::WriteToAvi()
     uint32_t size_pix = MAX_WIDTH * MAX_HEIGHT * 3;
     uint32_t size_rec = 3*4 + size_pix;
     uint32_t size_movi = 3*4 + size_rec;
-    uint32_t size_strl = 3*4 + sizeof(StreamHeader) + 2*4 + sizeof(StreamFormat);
-    uint32_t size_hrdl =  3*4 + sizeof(MainHeader) + 2*4 + size_strl;
+    uint32_t size_strl = 3*4 + sizeof(streamHeader) + 2*4 + sizeof(streamFormat);
+    uint32_t size_hrdl =  3*4 + sizeof(mainHeader) + 2*4 + size_strl;
     uint32_t size_riff = 3 + 2*4 + size_hrdl + 2*4 + size_movi;
 
-    file.write("RIFF", 4);
-    file.write(reinterpret_cast<const char*>(&size_riff), 4);
-    file.write("AVI ", 4);
+    outputFile.write("RIFF", 4);
+    outputFile.write(reinterpret_cast<const char*>(&size_riff), 4);
+    outputFile.write("AVI ", 4);
 
-    file.write("LIST", 4);
-    file.write(reinterpret_cast<const char*>(&size_hrdl), 4);
-    file.write("hdrl", 4);
+    outputFile.write("LIST", 4);
+    outputFile.write(reinterpret_cast<const char*>(&size_hrdl), 4);
+    outputFile.write("hdrl", 4);
 
-    file.write("avih", 4);
-    uint32_t size_mainaviheader = sizeof(MainHeader);
-    file.write(reinterpret_cast<const char*>(&size_mainaviheader), 4);
-    file.write(reinterpret_cast<const char*>(&MainHeader), sizeof(MainHeader));
+    outputFile.write("avih", 4);
+    uint32_t size_mainaviheader = sizeof(mainHeader);
+    outputFile.write(reinterpret_cast<const char*>(&size_mainaviheader), 4);
+    outputFile.write(reinterpret_cast<const char*>(&mainHeader), sizeof(mainHeader));
 
-    file.write("LIST", 4);
-    file.write(reinterpret_cast<const char*>(&size_strl), 4);
-    file.write("strl", 4);
+    outputFile.write("LIST", 4);
+    outputFile.write(reinterpret_cast<const char*>(&size_strl), 4);
+    outputFile.write("strl", 4);
 
-    file.write("strh", 4);
-    int temp = sizeof(StreamHeader);
-    file.write(reinterpret_cast<const char*>(&temp), 4);
-    file.write(reinterpret_cast<const char*>(&StreamHeader), sizeof(StreamHeader));
+    outputFile.write("strh", 4);
+    int temp = sizeof(streamHeader);
+    outputFile.write(reinterpret_cast<const char*>(&temp), 4);
+    outputFile.write(reinterpret_cast<const char*>(&streamHeader), sizeof(streamHeader));
 
-    file.write("strf", 4);
-    temp = sizeof(StreamFormat);
-    file.write(reinterpret_cast<const char*>(&temp), 4);
-    file.write(reinterpret_cast<const char*>(&StreamFormat), sizeof(StreamFormat));
+    outputFile.write("strf", 4);
+    temp = sizeof(streamFormat);
+    outputFile.write(reinterpret_cast<const char*>(&temp), 4);
+    outputFile.write(reinterpret_cast<const char*>(&streamFormat), sizeof(streamFormat));
 
-    file.write("LIST", 4);
-    file.write(reinterpret_cast<const char*>(&size_movi), 4);
-    file.write("movi", 4);
+    outputFile.write("LIST", 4);
+    outputFile.write(reinterpret_cast<const char*>(&size_movi), 4);
+    outputFile.write("movi", 4);
 
-    file.write("LIST", 4);
-    file.write(reinterpret_cast<const char*>(&size_rec), 4);
-    file.write("rec ", 4);
+    outputFile.write("LIST", 4);
+    outputFile.write(reinterpret_cast<const char*>(&size_rec), 4);
+    outputFile.write("rec ", 4);
 
-    file.write("00db", 4); //uncompressed video frame
-    file.write(reinterpret_cast<const char*>(&size_pix), 4);
+    outputFile.write("00db", 4); //uncompressed video frame
+    outputFile.write(reinterpret_cast<const char*>(&size_pix), 4);
     // Entire Image written at once for enhanced performace
-    file.write(reinterpret_cast<const char*>(bmpBinary), 3*TOTAL_PIX);
+    outputFile.write(reinterpret_cast<const char*>(bmpBinary), 3*TOTAL_PIX);
 
-    file.close();
-    if (!file)
+    outputFile.close();
+    if (!outputFile)
     {
         std::cerr << "Error: File cannot be Closed\n\tExiting\n";
         exit(1);

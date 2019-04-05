@@ -13,12 +13,12 @@ class OutputImage
     uint8_t* ppmBinRed;
     uint8_t* ppmBinGreen;
     uint8_t* ppmBinBlue;
-    std::ofstream file;
+    std::ofstream outputFile;
     BitmapFileHeader flleHeader;
     BitmapInfoHeader infoHeader;
-    MainAVIHeader MainHeader;
-    AVIStreamHeader StreamHeader;
-    AVIStreamFormat StreamFormat;
+    MainAVIHeader mainHeader;
+    AVIStreamHeader streamHeader;
+    AVIStreamFormat streamFormat;
 
 public:
     OutputImage(InputImage*);
