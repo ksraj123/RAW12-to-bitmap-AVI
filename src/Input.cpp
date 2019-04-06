@@ -31,18 +31,18 @@ void InputImage::Push(uint8_t r, uint8_t g, uint8_t b)
 void InputImage::Load()
 {
     _intputFile.read(fileData, INPUT_SIZE);
-    for (int itr = 0; itr < INPUT_SIZE; itr+= 3)
+    for (int itrFileData = 0; itrFileData < INPUT_SIZE; itrFileData+= 3)
     {
-        int row = (itr * 2) / (MAX_WIDTH * 3);
+        int row = (itrFileData * 2) / (IMAGE_WIDTH * 3);
         if (row % 2 == 0)
         {
-            Push(fileData[itr], 0, 0);
-            Push(0, Sensel(fileData[itr+1], fileData[itr+2]), 0);
+            Push(fileData[itrFileData], 0, 0);
+            Push(0, Sensel(fileData[itrFileData+1], fileData[itrFileData+2]), 0);
         }
         else
         {
-            Push(0, fileData[itr], 0);
-            Push(0, 0, Sensel(fileData[itr+1], fileData[itr+2]));
+            Push(0, fileData[itrFileData], 0);
+            Push(0, 0, Sensel(fileData[itrFileData+1], fileData[itrFileData+2]));
         }
     }
     _intputFile.close();

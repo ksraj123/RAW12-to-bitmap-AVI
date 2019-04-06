@@ -4,8 +4,8 @@
 #include <iostream>
 #include <fstream>
 #include <cstdint>
-#define MAX_WIDTH 4096
-#define MAX_HEIGHT 3072
+#define IMAGE_WIDTH 4096
+#define IMAGE_HEIGHT 3072
 #define INPUT_SIZE (4096 * 3072 * 3 / 2)
 #define TOTAL_PIX (4096 * 3072)
 

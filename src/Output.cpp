@@ -1,15 +1,17 @@
 #include "headers/Output.h"
 
+// Constructor - calls GetPpmChannel() and GetBmpImage() to initialize binary channels
 OutputImage::OutputImage(InputImage* input)
-               : ppmBinRed(GetPpmBinary(input->GetRedChannel(), "red")),
-                 ppmBinGreen(GetPpmBinary(input->GetGreenChannel(), "green")),
-                 ppmBinBlue(GetPpmBinary(input->GetBlueChannel(), "blue"))
+               : ppmRedChnl(GetPpmChannel(input->GetRedChannel(), "red")),
+                 ppmGreenChnl(GetPpmChannel(input->GetGreenChannel(), "green")),
+                 ppmBlueChnl(GetPpmChannel(input->GetBlueChannel(), "blue"))
 {
-    bmpBinary = GetBmpBinary(input->GetRedChannel(), 
-                             input->GetBlueChannel(), 
-                             input->GetGreenChannel());
+    bmpImage = GetBmpImage(input->GetRedChannel(), 
+                           input->GetBlueChannel(), 
+                           input->GetGreenChannel());
 }
 
+// WritePpm() writes Binary PPM files (Red, Blue and Green)
 void OutputImage::WritePpm(std::string chanelName)
 {
     std::string outputFileName = "result/" + chanelName + ".ppm";
@@ -19,20 +21,20 @@ void OutputImage::WritePpm(std::string chanelName)
         std::cerr << "Error: File cannot be opened\n\tExiting\n";
         exit(1);
     }
-    outputFile << "P6\n" << "# " << chanelName << ".ppm\n" << MAX_WIDTH
-            << " " << MAX_HEIGHT << "\n" << "255" << "\n";
+    outputFile << "P6\n" << "# " << chanelName << ".ppm\n" << IMAGE_WIDTH
+               << " " << IMAGE_HEIGHT << "\n" << "255" << "\n";
 
     uint8_t* ppmBin = nullptr;
     switch (chanelName[0])
         {
             case 'r':
-                ppmBin = ppmBinRed;
+                ppmBin = ppmRedChnl;
                 break;
             case 'g':
-                ppmBin = ppmBinGreen;
+                ppmBin = ppmGreenChnl;
                 break;
             case 'b':
-                ppmBin = ppmBinBlue;
+                ppmBin = ppmBlueChnl;
                 break;
         }
     // Entire Image written at once for enhanced performace
@@ -41,11 +43,11 @@ void OutputImage::WritePpm(std::string chanelName)
     outputFile.close();
 }
 
+// WriteBmp writes binary Bmp file
 void OutputImage::WriteBmp()
 {
     flleHeader.fileSize = sizeof(BitmapFileHeader)
-                        + sizeof(BitmapInfoHeader)
-                        + MAX_WIDTH * MAX_HEIGHT * 3;
+                        + sizeof(BitmapInfoHeader) + TOTAL_PIX * 3;
     flleHeader.dataOffset = sizeof(BitmapFileHeader) + sizeof(BitmapInfoHeader);
 
     outputFile.open("result/BMP_output.bmp", std::ios::binary);
@@ -54,11 +56,10 @@ void OutputImage::WriteBmp()
         std::cerr << "Error: File cannot be opened\n\tExiting\n";
         exit(1);
     }
-
     outputFile.write(reinterpret_cast<const char*>(&flleHeader), sizeof(flleHeader));
     outputFile.write(reinterpret_cast<const char*>(&infoHeader), sizeof(infoHeader));
     // Entire Image written at once for enhanced performace
-    outputFile.write(reinterpret_cast<const char*>(bmpBinary), 3*TOTAL_PIX);
+    outputFile.write(reinterpret_cast<const char*>(bmpImage), 3*TOTAL_PIX);
     outputFile.close();
     if (!outputFile)
     {
@@ -67,6 +68,7 @@ void OutputImage::WriteBmp()
     }
 }
 
+// WriteToAVI() wirtes the Image into single frame AVI
 void OutputImage::WriteToAvi()
 {
     outputFile.open("result/AVI_output.avi", std::ios::binary);
@@ -75,7 +77,7 @@ void OutputImage::WriteToAvi()
         std::cerr << "Error: File cannot be opened\n\tExiting\n";
         exit(1);
     }
-    uint32_t size_pix = MAX_WIDTH * MAX_HEIGHT * 3;
+    uint32_t size_pix = TOTAL_PIX * 3;
     uint32_t size_rec = 3*4 + size_pix;
     uint32_t size_movi = 3*4 + size_rec;
     uint32_t size_strl = 3*4 + sizeof(streamHeader) + 2*4 + sizeof(streamFormat);
@@ -120,7 +122,7 @@ void OutputImage::WriteToAvi()
     outputFile.write("00db", 4); //uncompressed video frame
     outputFile.write(reinterpret_cast<const char*>(&size_pix), 4);
     // Entire Image written at once for enhanced performace
-    outputFile.write(reinterpret_cast<const char*>(bmpBinary), 3*TOTAL_PIX);
+    outputFile.write(reinterpret_cast<const char*>(bmpImage), 3*TOTAL_PIX);
 
     outputFile.close();
     if (!outputFile)
@@ -130,23 +132,26 @@ void OutputImage::WriteToAvi()
     }
 }
 
+// GetPpmChannel() adds zeros in place of intensity values of other 
+// channels so that a single colour channel can be written directly
 // Returns pointer to image to be written in P6 PPM
-uint8_t* OutputImage::GetPpmBinary(uint8_t* arr, std::string chanelName)
+uint8_t* OutputImage::GetPpmChannel(uint8_t* channel, std::string chanelName)
 {
     uint8_t* ppmBin = new uint8_t[3*TOTAL_PIX]{0};
 
-    for (int itr_arr = 0, itr = 0; itr_arr < 3*TOTAL_PIX, itr < TOTAL_PIX; itr_arr += 3, ++itr)
+    for (int itrPpmBin = 0, itrChnl = 0; itrPpmBin < 3*TOTAL_PIX, 
+                            itrChnl < TOTAL_PIX; itrPpmBin += 3, ++itrChnl)
     {
         switch (chanelName[0])
         {
             case 'r':
-                ppmBin[itr_arr] = arr[itr];
+                ppmBin[itrPpmBin] = channel[itrChnl];
                 break;
             case 'g':
-                ppmBin[itr_arr+1] = arr[itr];
+                ppmBin[itrPpmBin+1] = channel[itrChnl];
                 break;
             case 'b':
-                ppmBin[itr_arr+2] = arr[itr];
+                ppmBin[itrPpmBin+2] = channel[itrChnl];
                 break;
         }      
     }
@@ -154,27 +159,27 @@ uint8_t* OutputImage::GetPpmBinary(uint8_t* arr, std::string chanelName)
 }
 
 // Returns pointer to Inverted Image to writeen into Bitmap and AVI
-uint8_t* OutputImage::GetBmpBinary(uint8_t* arr_r, uint8_t* arr_b, uint8_t* arr_g)
+uint8_t* OutputImage::GetBmpImage(uint8_t* channelRed, uint8_t* channelBlue, 
+                                  uint8_t* channelGreen)
 {
     uint8_t* bmpBin = new uint8_t [TOTAL_PIX*3];
-    for (int row = MAX_HEIGHT-1, itr = 0; row >= 0; --row)
+    for (int row = IMAGE_HEIGHT-1, itr = 0; row >= 0; --row)
     {
-        for (int col = row * MAX_WIDTH; col < (row+1)*MAX_WIDTH; ++col)
+        for (int col = row * IMAGE_WIDTH; col < (row+1)*IMAGE_WIDTH; ++col)
         {
-            bmpBin[itr] = arr_b[col];
-            bmpBin[itr+1] = arr_g[col];
-            bmpBin[itr+2] = arr_r[col];
+            bmpBin[itr] = channelBlue[col];
+            bmpBin[itr+1] = channelGreen[col];
+            bmpBin[itr+2] = channelRed[col];
             itr+=3;
         }
     }
     return bmpBin;
 }
 
-
 OutputImage::~OutputImage()
 {
-    delete bmpBinary;
-    delete ppmBinRed;
-    delete ppmBinGreen;
-    delete ppmBinBlue;
+    delete bmpImage;
+    delete ppmRedChnl;
+    delete ppmGreenChnl;
+    delete ppmBlueChnl;
 }
