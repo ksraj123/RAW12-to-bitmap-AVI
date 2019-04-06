@@ -2,13 +2,13 @@
 
 // Constructor - calls GetPpmChannel() and GetBmpImage() to initialize binary channels
 OutputImage::OutputImage(InputImage* input)
-               : ppmRedChnl(GetPpmChannel(input->GetRedChannel(), "red")),
-                 ppmGreenChnl(GetPpmChannel(input->GetGreenChannel(), "green")),
-                 ppmBlueChnl(GetPpmChannel(input->GetBlueChannel(), "blue"))
+               : ppmRedChnl(GetPpmChannel(input->redChannel, "red")),
+                 ppmGreenChnl(GetPpmChannel(input->greenChannel, "green")),
+                 ppmBlueChnl(GetPpmChannel(input->blueChannel, "blue"))
 {
-    bmpImage = GetBmpImage(input->GetRedChannel(), 
-                           input->GetBlueChannel(), 
-                           input->GetGreenChannel());
+    bmpImage = GetBmpImage(input->redChannel, 
+                           input->blueChannel, 
+                           input->greenChannel);
 }
 
 // WritePpm() writes Binary PPM files (Red, Blue and Green)

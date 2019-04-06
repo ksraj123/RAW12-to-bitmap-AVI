@@ -10,21 +10,24 @@
 #define TOTAL_PIX (4096 * 3072)
 
 class InputImage
-{
-    uint8_t *red;
-    uint8_t *blue;
-    uint8_t *green;
+{   
+
+    uint8_t *cfa;
     char* fileData;
     std::string _filePath;
     std::ifstream _intputFile;
 
 public:
+    uint8_t *redChannel;
+    uint8_t *blueChannel;
+    uint8_t *greenChannel;
     InputImage(std::string);
     void Push(uint8_t, uint8_t, uint8_t);
     void Load();
-    uint8_t* GetRedChannel();
-    uint8_t* GetBlueChannel();
-    uint8_t* GetGreenChannel();
+    void InitializeChannels();
+    void InitializeRedChannel();
+    void InitializeBlueChannel();
+    void InitializeGreenChannel();
     ~InputImage();
 };
 

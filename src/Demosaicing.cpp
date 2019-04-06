@@ -5,11 +5,11 @@
 void Demosaic::DemosaicChannels(InputImage* input)
 {
     std::cout << "Demosaicing Red channel\n";
-    RedBlue(input->GetRedChannel(), 1);
-    std::cout << "Demosaicing Green channel\n";
-    Green(input->GetGreenChannel());
+    RedBlue(input->redChannel, 1);
     std::cout << "Demosaicing Blue channel\n";
-    RedBlue(input->GetBlueChannel(), 0);
+    RedBlue(input->blueChannel, 0);
+    std::cout << "Demosaicing Green channel\n";
+    Green(input->greenChannel);
 }
 
 // This fuction demosaics red and blue channels
@@ -37,7 +37,7 @@ void Demosaic::RedBlue(uint8_t* channel, int startPos)
 // This fuctions demosaics green channel
 void Demosaic::Green(uint8_t* channel)
 {
-    for (int itrChnl = 0; itrChnl < TOTAL_PIX;)
+    for (int itrChnl = IMAGE_WIDTH+1; itrChnl < TOTAL_PIX;)
     {
         channel[itrChnl] = (channel[itrChnl - 1] + channel[itrChnl + 1] 
                           + channel[itrChnl - IMAGE_WIDTH]

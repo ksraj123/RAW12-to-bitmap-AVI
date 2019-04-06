@@ -6,29 +6,30 @@ int main()
 {
     std::cout << "//////// !!!! KUMAR SAURABH RAJ !!!! ///////\n";
 
-    InputImage InputImg("test_image/test_image.raw12");
+    InputImage inputImg("test_image/test_image.raw12");
     std::cout << "Loading Raw12Image\n";
-    InputImg.Load();
+    inputImg.Load();
+    inputImg.InitializeChannels();
 
     std::cout << "Debayering channels\n";
     Demosaic demo;
-    demo.DemosaicChannels(&InputImg);
+    demo.DemosaicChannels(&inputImg);
 
     std::cout << "Writing output\n";
-    OutputImage OutImg(&InputImg);
+    OutputImage outImg(&inputImg);
 
     std::cout << "Writing 8 bit PPM channels\n";
     std::cout << "Writing Red channel\n";
-    OutImg.WritePpm("red");
+    outImg.WritePpm("red");
     std::cout << "Writing Green channel\n";
-    OutImg.WritePpm("blue");
+    outImg.WritePpm("blue");
     std::cout << "Writing Blue Channel\n";
-    OutImg.WritePpm("green"); 
+    outImg.WritePpm("green"); 
 
     std::cout << "Writing Debayered BMP image\n";
-    OutImg.WriteBmp();
+    outImg.WriteBmp();
     std::cout << "Writing Debayered Image into AVI\n";
-    OutImg.WriteToAvi();
+    outImg.WriteToAvi();
 
 
     std::cout << "Please check results folder after sometime for output images\n";
