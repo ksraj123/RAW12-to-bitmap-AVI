@@ -9,7 +9,7 @@
 #define INPUT_SIZE (4096 * 3072 * 3 / 2)
 #define TOTAL_PIX (4096 * 3072)
 
-class InputImage
+class Raw12Img
 {   
 
     uint8_t *cfa;
@@ -21,14 +21,17 @@ public:
     uint8_t *redChannel;
     uint8_t *blueChannel;
     uint8_t *greenChannel;
-    InputImage(std::string);
+    Raw12Img(std::string);
+    ~Raw12Img();
     void Push(uint8_t, uint8_t, uint8_t);
-    void Load();
+    void LoadImage();
+    void InitializeCfa();
     void InitializeChannels();
+    void print5by5tile();
+    void printIntensity(uint8_t*);
     void InitializeRedChannel();
     void InitializeBlueChannel();
     void InitializeGreenChannel();
-    ~InputImage();
 };
 
 #endif

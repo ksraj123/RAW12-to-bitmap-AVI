@@ -1,7 +1,7 @@
 #include "headers/Output.h"
 
 // Constructor - calls GetPpmChannel() and GetBmpImage() to initialize binary channels
-OutputImage::OutputImage(InputImage* input)
+OutputImage::OutputImage(Raw12Img* input)
                : ppmRedChnl(GetPpmChannel(input->redChannel, "red")),
                  ppmGreenChnl(GetPpmChannel(input->greenChannel, "green")),
                  ppmBlueChnl(GetPpmChannel(input->blueChannel, "blue"))
@@ -11,6 +11,14 @@ OutputImage::OutputImage(InputImage* input)
                            input->greenChannel);
 }
 
+OutputImage::~OutputImage()
+{
+    delete bmpImage;
+    delete ppmRedChnl;
+    delete ppmGreenChnl;
+    delete ppmBlueChnl;
+}
+
 // WritePpm() writes Binary PPM files (Red, Blue and Green)
 void OutputImage::WritePpm(std::string chanelName)
 {
@@ -18,7 +26,7 @@ void OutputImage::WritePpm(std::string chanelName)
     outputFile.open(outputFileName, std::ios::out | std::ios::trunc);
     if(!outputFile)
     {
-        std::cerr << "Error: File cannot be opened\n\tExiting\n";
+        std::cerr << "Error: File cannot be opened\n\tExiting" << std::endl;
         exit(1);
     }
     outputFile << "P6\n" << "# " << chanelName << ".ppm\n" << IMAGE_WIDTH
@@ -53,7 +61,7 @@ void OutputImage::WriteBmp()
     outputFile.open("result/BMP_output.bmp", std::ios::binary);
     if(!outputFile)
     {
-        std::cerr << "Error: File cannot be opened\n\tExiting\n";
+        std::cerr << "Error: File cannot be opened\n\tExiting" << std::endl;
         exit(1);
     }
     outputFile.write(reinterpret_cast<const char*>(&flleHeader), sizeof(flleHeader));
@@ -63,7 +71,7 @@ void OutputImage::WriteBmp()
     outputFile.close();
     if (!outputFile)
     {
-        std::cerr << "Error: File cannot be Closed\n\tExiting\n";
+        std::cerr << "Error: File cannot be Closed\n\tExiting" << std::endl;
         exit(1);
     }
 }
@@ -74,7 +82,7 @@ void OutputImage::WriteToAvi()
     outputFile.open("result/AVI_output.avi", std::ios::binary);
     if(!outputFile)
     {
-        std::cerr << "Error: File cannot be opened\n\tExiting\n";
+        std::cerr << "Error: File cannot be opened\n\tExiting" << std::endl;
         exit(1);
     }
     uint32_t size_pix = TOTAL_PIX * 3;
@@ -127,7 +135,7 @@ void OutputImage::WriteToAvi()
     outputFile.close();
     if (!outputFile)
     {
-        std::cerr << "Error: File cannot be Closed\n\tExiting\n";
+        std::cerr << "Error: File cannot be Closed\n\tExiting" << std::endl;
         exit(1);
     }
 }
@@ -174,12 +182,4 @@ uint8_t* OutputImage::GetBmpImage(uint8_t* channelRed, uint8_t* channelBlue,
         }
     }
     return bmpBin;
-}
-
-OutputImage::~OutputImage()
-{
-    delete bmpImage;
-    delete ppmRedChnl;
-    delete ppmGreenChnl;
-    delete ppmBlueChnl;
 }

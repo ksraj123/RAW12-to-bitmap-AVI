@@ -6,8 +6,9 @@
 class Demosaic
 {
 public:
-	void DemosaicChannels(InputImage*);
-    void RedBlue(uint8_t*, int);
+	void DemosaicChannels(Raw12Img*);
+    void Red(uint8_t*);
+    void Blue(uint8_t*);
     void Green(uint8_t*);
 };
 

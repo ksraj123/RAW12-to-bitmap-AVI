@@ -19,14 +19,14 @@ class OutputImage
     AVIStreamFormat streamFormat;
 
 public:
-    OutputImage(InputImage*);
+    OutputImage(Raw12Img*);
+    ~OutputImage();
     void WritePpm(std::string);
     void WritePpmRed(uint8_t*, std::string);
     void WriteBmp();
     void WriteToAvi();
     uint8_t* GetBmpImage(uint8_t*, uint8_t*, uint8_t*);
     uint8_t* GetPpmChannel(uint8_t*, std::string);
-    ~OutputImage();
 };
 
 #endif

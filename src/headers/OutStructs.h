@@ -5,7 +5,7 @@
 #define GCC_PACK __attribute__((packed))
 #else
 #define GCC_PACK
-#pragma pack(push,2)
+#pragma pack(push,1)
 #endif
 
 struct BitmapFileHeader

@@ -2,7 +2,7 @@
 #define Sensel(A, B) ((A & 0x0F) << 4 | (B & 0xF0) >> 4)
 
 // Constructor - defines arrays and loads the image
-InputImage::InputImage(std::string filePath)
+Raw12Img::Raw12Img(std::string filePath)
               : _filePath(filePath),
                 redChannel(new uint8_t[TOTAL_PIX]{0}),
                 blueChannel(new uint8_t[TOTAL_PIX]{0}),
@@ -10,6 +10,19 @@ InputImage::InputImage(std::string filePath)
                 cfa(new uint8_t[TOTAL_PIX]{0}),
                 fileData(new char[INPUT_SIZE]{0})
 
+{
+}
+
+Raw12Img::~Raw12Img()
+{
+    delete redChannel;
+    delete blueChannel;
+    delete greenChannel;
+    delete fileData;
+    delete cfa;
+}
+
+void Raw12Img::LoadImage()
 {
     _intputFile.open(_filePath, std::ios::binary);
     if(!_intputFile)
@@ -20,7 +33,7 @@ InputImage::InputImage(std::string filePath)
 }
 
 // Reads the CFA and initializes the channels
-void InputImage::Load()
+void Raw12Img::InitializeCfa()
 {
     _intputFile.read(fileData, INPUT_SIZE);
     for (int itrFileData = 0, itrCfa = 0; itrFileData < INPUT_SIZE, itrCfa < TOTAL_PIX; itrFileData += 3, itrCfa+=2)
@@ -31,7 +44,31 @@ void InputImage::Load()
     _intputFile.close();
 }
 
-void InputImage::InitializeChannels()
+void Raw12Img::printIntensity(uint8_t* array)
+{
+    for (int row = 0; row < 5; ++row)
+    {
+        for (int index = 0; index < 5; ++index)
+        {
+            std::cout << (int)array[row * IMAGE_WIDTH + index] << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
+void Raw12Img::print5by5tile()
+{
+    std::cout << "Printing 5 by 5 tile of CFA" << std::endl;
+    printIntensity(cfa);
+    std::cout << "Printing 5 by 5 tile of Red Channel" << std::endl;
+    printIntensity(redChannel);
+    std::cout << "Printing 5 by 5 tile of Green Channel" << std::endl;
+    printIntensity(greenChannel);
+    std::cout << "Printing 5 by 5 tile of Blue Channel" << std::endl;
+    printIntensity(blueChannel);
+}
+
+void Raw12Img::InitializeChannels()
 {
     InitializeRedChannel();
     InitializeGreenChannel();
@@ -39,7 +76,7 @@ void InputImage::InitializeChannels()
 }
 
 // Returns pointer to Red Channel
-void InputImage::InitializeRedChannel()
+void Raw12Img::InitializeRedChannel()
 {
     for (int itrRed = 0; itrRed < TOTAL_PIX;)
     {
@@ -57,7 +94,7 @@ void InputImage::InitializeRedChannel()
 }
 
 // Returns pointer to Blue Channel
-void InputImage::InitializeBlueChannel()
+void Raw12Img::InitializeBlueChannel()
 {
     for (int itrBlue = IMAGE_WIDTH + 1; itrBlue < TOTAL_PIX;)
     {
@@ -75,7 +112,7 @@ void InputImage::InitializeBlueChannel()
 }
 
 // Returns pointer to Green Channel
-void InputImage::InitializeGreenChannel()
+void Raw12Img::InitializeGreenChannel()
 {
     for (int itrGreen = 1; itrGreen < TOTAL_PIX; itrGreen += 2)
     {
@@ -89,13 +126,4 @@ void InputImage::InitializeGreenChannel()
             greenChannel[itrGreen - 1] = cfa[itrGreen - 1];
         }
     }
-}
-
-InputImage::~InputImage()
-{
-    delete redChannel;
-    delete blueChannel;
-    delete greenChannel;
-    delete fileData;
-    delete cfa;
 }
