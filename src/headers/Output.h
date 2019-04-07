@@ -5,28 +5,37 @@
 #include "Input.h"
 #include "OutStructs.h"
 
-class OutputImage
+class OutputWriter
 {
     uint8_t* bmpImage;
     uint8_t* ppmRedChnl;
     uint8_t* ppmGreenChnl;
     uint8_t* ppmBlueChnl;
-    std::ofstream outputFile;
     BitmapFileHeader flleHeader;
     BitmapInfoHeader infoHeader;
-    MainAVIHeader mainHeader;
-    AVIStreamHeader streamHeader;
-    AVIStreamFormat streamFormat;
 
 public:
-    OutputImage(Raw12Img*);
-    ~OutputImage();
+    static std::ofstream outputFile;
+    OutputWriter();
+    ~OutputWriter();
+    void InitializeOutputChannels(Raw12Img*);
     void WritePpm(std::string);
     void WritePpmRed(uint8_t*, std::string);
     void WriteBmp();
     void WriteToAvi();
     uint8_t* GetBmpImage(uint8_t*, uint8_t*, uint8_t*);
     uint8_t* GetPpmChannel(uint8_t*, std::string);
+};
+
+class Chunk
+{
+    char _fourCC[4];
+    uint32_t _size;
+    Avi* _avi;
+
+public:
+    Chunk(std::string, uint32_t, Avi* avi = nullptr);
+    void Write();
 };
 
 #endif

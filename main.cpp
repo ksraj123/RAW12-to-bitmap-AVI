@@ -11,7 +11,7 @@ int main()
     inputImg.LoadImage();
     inputImg.InitializeCfa();
     inputImg.InitializeChannels();
-    inputImg.print5by5tile();
+    inputImg.Print5by5tile();
 
     std::cout << "Demosaicing channels" << std::endl;
     Demosaic demosaicChannel;
@@ -23,20 +23,21 @@ int main()
     demosaicChannel.Blue(inputImg.blueChannel);
 
     std::cout << "Writing output" << std::endl;
-    OutputImage outImg(&inputImg);
+    OutputWriter outputImage;
 
     std::cout << "Writing 8 bit PPM channels" << std::endl;
     std::cout << "Writing Red channel" << std::endl;
-    outImg.WritePpm("red");
+    outputImage.InitializeOutputChannels(&inputImg);
+    outputImage.WritePpm("red");
     std::cout << "Writing Green channel" << std::endl;
-    outImg.WritePpm("blue");
+    outputImage.WritePpm("blue");
     std::cout << "Writing Blue Channel" << std::endl;
-    outImg.WritePpm("green"); 
+    outputImage.WritePpm("green"); 
 
     std::cout << "Writing Debayered BMP image" << std::endl;
-    outImg.WriteBmp();
+    outputImage.WriteBmp();
     std::cout << "Writing Debayered Image into AVI" << std::endl;
-    outImg.WriteToAvi();
+    outputImage.WriteToAvi();
 
 
     std::cout << "Please check results folder after sometime for output images" << std::endl;

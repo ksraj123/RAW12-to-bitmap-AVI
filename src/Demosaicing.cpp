@@ -11,9 +11,9 @@ void Demosaic::Red(uint8_t* channel)
         if (row % 2 == 1)
         {
             channel[itrChnl - 1] = (channel[itrChnl - 1 - IMAGE_WIDTH] 
-                                 + channel[itrChnl - 1 + IMAGE_WIDTH]) / 2;
+                                 +  channel[itrChnl - 1 + IMAGE_WIDTH]) / 2;
             channel[itrChnl + 1] = (channel[itrChnl+1-IMAGE_WIDTH] 
-                                 + channel[itrChnl+1+IMAGE_WIDTH]) / 2;
+                                 +  channel[itrChnl+1+IMAGE_WIDTH]) / 2;
         }
         channel[itrChnl] = (channel[itrChnl - 1] + channel[itrChnl + 1]) / 2;
     }
@@ -30,9 +30,9 @@ void Demosaic::Blue(uint8_t* channel)
         if (row % 2 == 0)
         {
             channel[itrChnl - 1] = (channel[itrChnl - 1 - IMAGE_WIDTH] 
-                                 + channel[itrChnl - 1 + IMAGE_WIDTH]) / 2;
+                                 +  channel[itrChnl - 1 + IMAGE_WIDTH]) / 2;
             channel[itrChnl + 1] = (channel[itrChnl+1-IMAGE_WIDTH] 
-                                 + channel[itrChnl+1+IMAGE_WIDTH]) / 2;
+                                 +  channel[itrChnl+1+IMAGE_WIDTH]) / 2;
         }
         channel[itrChnl] = (channel[itrChnl - 1] + channel[itrChnl + 1]) / 2;
     }
@@ -45,8 +45,8 @@ void Demosaic::Green(uint8_t* channel)
     for (int itrChnl = IMAGE_WIDTH+1; itrChnl < TOTAL_PIX;)
     {
         channel[itrChnl] = (channel[itrChnl - 1] + channel[itrChnl + 1] 
-                          + channel[itrChnl - IMAGE_WIDTH]
-                          + channel[itrChnl + IMAGE_WIDTH])/4;
+                         +  channel[itrChnl - IMAGE_WIDTH]
+                         +  channel[itrChnl + IMAGE_WIDTH])/4;
         if (itrChnl / IMAGE_WIDTH != (itrChnl + 2) / IMAGE_WIDTH)
         {
             itrChnl += 3;

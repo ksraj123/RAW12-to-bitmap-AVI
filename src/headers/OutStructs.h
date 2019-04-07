@@ -35,8 +35,15 @@ struct BitmapInfoHeader
 #pragma pack(pop)
 #endif
 
+#include <string.h>
+#include <stdlib.h>
 
-struct MainAVIHeader
+struct Avi
+{    
+};
+
+
+struct MainAVIHeader : Avi
 {
     uint32_t  MicroSecPerFrame {1000000};
     uint32_t  MaxBytesPerSec {IMAGE_HEIGHT * IMAGE_WIDTH * 3 + 1000};
@@ -51,7 +58,7 @@ struct MainAVIHeader
     uint32_t  Reserved[4] {0};
 } ;
 
-struct AVIStreamHeader
+struct AVIStreamHeader : Avi
 {
     char fccType[4] {'v', 'i', 'd', 's'};
     char fccHandler[4] {'R', 'A', 'W', ' '}; //optioanl
@@ -75,7 +82,7 @@ struct AVIStreamHeader
     }  rcFrame;
 };
 
-struct AVIStreamFormat
+struct AVIStreamFormat : Avi
 {
     uint32_t headerSize {40};
     uint32_t width {IMAGE_WIDTH};

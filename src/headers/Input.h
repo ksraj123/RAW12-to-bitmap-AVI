@@ -16,6 +16,10 @@ class Raw12Img
     char* fileData;
     std::string _filePath;
     std::ifstream _intputFile;
+    void InitializeRedChannel();
+    void InitializeBlueChannel();
+    void InitializeGreenChannel();
+    void PrintIntensity(uint8_t*);
 
 public:
     uint8_t *redChannel;
@@ -23,15 +27,10 @@ public:
     uint8_t *greenChannel;
     Raw12Img(std::string);
     ~Raw12Img();
-    void Push(uint8_t, uint8_t, uint8_t);
     void LoadImage();
     void InitializeCfa();
     void InitializeChannels();
-    void print5by5tile();
-    void printIntensity(uint8_t*);
-    void InitializeRedChannel();
-    void InitializeBlueChannel();
-    void InitializeGreenChannel();
+    void Print5by5tile();
 };
 
 #endif

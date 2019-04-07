@@ -44,7 +44,7 @@ void Raw12Img::InitializeCfa()
     _intputFile.close();
 }
 
-void Raw12Img::printIntensity(uint8_t* array)
+void Raw12Img::PrintIntensity(uint8_t* array)
 {
     for (int row = 0; row < 5; ++row)
     {
@@ -56,16 +56,16 @@ void Raw12Img::printIntensity(uint8_t* array)
     }
 }
 
-void Raw12Img::print5by5tile()
+void Raw12Img::Print5by5tile()
 {
     std::cout << "Printing 5 by 5 tile of CFA" << std::endl;
-    printIntensity(cfa);
+    PrintIntensity(cfa);
     std::cout << "Printing 5 by 5 tile of Red Channel" << std::endl;
-    printIntensity(redChannel);
+    PrintIntensity(redChannel);
     std::cout << "Printing 5 by 5 tile of Green Channel" << std::endl;
-    printIntensity(greenChannel);
+    PrintIntensity(greenChannel);
     std::cout << "Printing 5 by 5 tile of Blue Channel" << std::endl;
-    printIntensity(blueChannel);
+    PrintIntensity(blueChannel);
 }
 
 void Raw12Img::InitializeChannels()
