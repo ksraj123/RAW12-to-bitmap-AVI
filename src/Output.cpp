@@ -1,67 +1,55 @@
 #include "headers/Output.h"
 
-// Constructor - calls GetPpmChannel() and GetBmpImage() to initialize binary channels
+// Constructor - calls ConvertToPPM() and ConvertToBMP() to initialize binary channels
 
-std::ofstream OutputWriter::outputFile;
+//std::ofstream OutputWriter::outputFile;
 
-OutputWriter::OutputWriter()
+
+void OutputWriter::Print5by5tile(uint8_t* array)
 {
-    ppmRedChnl   = nullptr;
-    ppmGreenChnl = nullptr;
-    ppmBlueChnl  = nullptr;
-    bmpImage     = nullptr;
-}
-
-OutputWriter::~OutputWriter()
-{
-    delete bmpImage;
-    delete ppmRedChnl;
-    delete ppmGreenChnl;
-    delete ppmBlueChnl;
-}
-
-void OutputWriter::InitializeOutputChannels(Raw12Img* input)
-{
-    ppmRedChnl   = GetPpmChannel(input->redChannel, "red");
-    ppmGreenChnl = GetPpmChannel(input->greenChannel, "green");
-    ppmBlueChnl  = GetPpmChannel(input->blueChannel, "blue");
-    bmpImage     = GetBmpImage(input->redChannel, 
-                               input->blueChannel, 
-                               input->greenChannel);
+    for (int row = 0; row < 5; ++row)
+    {
+        for (int index = 0; index < 5; ++index)
+        {
+            std::cout << (int)array[row * IMAGE_WIDTH + index] << " ";
+        }
+        std::cout << std::endl;
+    }
 }
 
 // WritePpm() writes Binary PPM files (Red, Blue and Green)
-void OutputWriter::WritePpm(std::string chanelName)
+void OutputWriter::WritePpm(std::string chanelName, ImageProcessor* debayeredImg)
 {
     std::string outputFileName = "result/" + chanelName + ".ppm";
 
-    outputFile.open(outputFileName, std::ios::out | std::ios::trunc);
-    if(!outputFile)
+    std::ofstream outputPPM;
+    outputPPM.open(outputFileName, std::ios::out | std::ios::trunc);
+    if(!outputPPM)
     {
         std::cerr << "Error: File cannot be opened\n\tExiting" << std::endl;
         exit(1);
     }
 
-    outputFile << "P6\n" << "# " << chanelName << ".ppm\n" << IMAGE_WIDTH
+    outputPPM << "P6\n" << "# " << chanelName << ".ppm\n" << IMAGE_WIDTH
                << " " << IMAGE_HEIGHT << "\n" << "255" << "\n";
 
     uint8_t* ppmBin = nullptr;
     switch (chanelName[0])
         {
             case 'r':
-                ppmBin = ppmRedChnl;
+                ppmBin = ConvertToPPM(debayeredImg->redChannel, "red");;
                 break;
             case 'g':
-                ppmBin = ppmGreenChnl;
+                ppmBin = ConvertToPPM(debayeredImg->greenChannel, "green");
                 break;
             case 'b':
-                ppmBin = ppmBlueChnl;
+                ppmBin = ConvertToPPM(debayeredImg->blueChannel, "blue");
                 break;
         }
     // Entire Image written at once for enhanced performace
-    outputFile.write(reinterpret_cast<const char*> (ppmBin), TOTAL_PIX * 3);
-    outputFile.close();
-    if (!outputFile)
+    outputPPM.write(reinterpret_cast<const char*> (ppmBin), TOTAL_PIX * 3);
+    outputPPM.close();
+    if (!outputPPM)
     {
         std::cerr << "Error: File cannot be Closed\n\tExiting" << std::endl;
         exit(1);
@@ -69,24 +57,31 @@ void OutputWriter::WritePpm(std::string chanelName)
 }
 
 // WriteBmp writes binary Bmp file
-void OutputWriter::WriteBmp()
+void OutputWriter::WriteBmp(ImageProcessor* debayeredImg)
 {
+    BitmapFileHeader flleHeader;
+    BitmapInfoHeader infoHeader;
     flleHeader.fileSize   = sizeof(BitmapFileHeader)
                           + sizeof(BitmapInfoHeader) + TOTAL_PIX * 3;
     flleHeader.dataOffset = sizeof(BitmapFileHeader) + sizeof(BitmapInfoHeader);
 
-    outputFile.open("result/BMP_output.bmp", std::ios::binary);
-    if(!outputFile)
+    std::ofstream outputBMP;
+    outputBMP.open("result/BMP_output.bmp", std::ios::binary);
+    if(!outputBMP)
     {
         std::cerr << "Error: File cannot be opened\n\tExiting" << std::endl;
         exit(1);
     }
-    outputFile.write(reinterpret_cast<const char*>(&flleHeader), sizeof(flleHeader));
-    outputFile.write(reinterpret_cast<const char*>(&infoHeader), sizeof(infoHeader));
+    outputBMP.write(reinterpret_cast<const char*>(&flleHeader), sizeof(flleHeader));
+    outputBMP.write(reinterpret_cast<const char*>(&infoHeader), sizeof(infoHeader));
     // Entire Image written at once for enhanced performace
-    outputFile.write(reinterpret_cast<const char*>(bmpImage), 3 * TOTAL_PIX);
-    outputFile.close();
-    if (!outputFile)
+
+    bmpImage = ConvertToBMP(debayeredImg->redChannel, debayeredImg->blueChannel, 
+                            debayeredImg->greenChannel);
+
+    outputBMP.write(reinterpret_cast<const char*>(bmpImage), 3 * TOTAL_PIX);
+    outputBMP.close();
+    if (!outputBMP)
     {
         std::cerr << "Error: File cannot be Closed\n\tExiting" << std::endl;
         exit(1);
@@ -100,23 +95,24 @@ Chunk::Chunk(std::string str, uint32_t size, Avi* avi)
     _avi = avi;
 }
 
-void Chunk::Write()
+void Chunk::WriteToFile(std::ofstream* outputAVI)
 {
-    OutputWriter::outputFile.write(reinterpret_cast<const char*>(_fourCC), 4);
-    OutputWriter::outputFile.write(reinterpret_cast<const char*>(&_size), 4);
+    outputAVI->write(reinterpret_cast<const char*>(_fourCC), 4);
+    outputAVI->write(reinterpret_cast<const char*>(&_size), 4);
     if (_avi == nullptr)
     {
         _size = 0;
     }
-    OutputWriter::outputFile.write(reinterpret_cast<const char*>(_avi), _size);
+    outputAVI->write(reinterpret_cast<const char*>(_avi), _size);
 }
 
 
 // WriteToAVI() wirtes the Image into single frame AVI
-void OutputWriter::WriteToAvi()
+void OutputWriter::WriteAvi()
 {
-    outputFile.open("result/AVI_output.avi", std::ios::binary);
-    if(!outputFile)
+    std::ofstream outputAVI;
+    outputAVI.open("result/AVI_output.avi", std::ios::binary);
+    if(!outputAVI)
     {
         std::cerr << "Error: File cannot be opened\n\tExiting" << std::endl;
         exit(1);
@@ -134,59 +130,57 @@ void OutputWriter::WriteToAvi()
     uint32_t size_riff = 3 + 2 * 4 + size_hrdl + 2 * 4 + size_movi;
 
     Chunk riff ("RIFF", size_riff);
-    riff.Write();
+    riff.WriteToFile(&outputAVI);
 
-    outputFile.write("AVI ", 4);
-
+    outputAVI.write("AVI ", 4);
 
     Chunk listHdrl ("LIST", size_hrdl);
-    listHdrl.Write();
+    listHdrl.WriteToFile(&outputAVI);
 
-    outputFile.write("hdrl", 4);
-
+    outputAVI.write("hdrl", 4);
 
     Chunk avih ("avih", sizeof(mainHeader), &mainHeader);
-    avih.Write();
+    avih.WriteToFile(&outputAVI);
 
     Chunk listStrl ("LIST", size_strl);
-    listStrl.Write();
+    listStrl.WriteToFile(&outputAVI);
 
-    outputFile.write("strl", 4);
+    outputAVI.write("strl", 4);
 
     Chunk strh ("strh", sizeof(streamHeader), &streamHeader);
-    strh.Write();
+    strh.WriteToFile(&outputAVI);
 
     Chunk strf ("strf", sizeof(streamFormat), &streamFormat);
-    strf.Write();
+    strf.WriteToFile(&outputAVI);
 
     Chunk listMovi ("LIST", size_movi);
-    listMovi.Write();
+    listMovi.WriteToFile(&outputAVI);
 
-    outputFile.write("movi", 4);
+    outputAVI.write("movi", 4);
 
     Chunk listRec ("LIST", size_rec);
-    listRec.Write();
+    listRec.WriteToFile(&outputAVI);
 
-    outputFile.write("rec ", 4);
+    outputAVI.write("rec ", 4);
 
     Chunk imgSubChnk ("00db", size_pix);
-    imgSubChnk.Write();
+    imgSubChnk.WriteToFile(&outputAVI);
 
     // Entire Image written at once for enhanced performace
-    outputFile.write(reinterpret_cast<const char*>(bmpImage), 3*TOTAL_PIX);
+    outputAVI.write(reinterpret_cast<const char*>(bmpImage), 3*TOTAL_PIX);
 
-    outputFile.close();
-    if (!outputFile)
+    outputAVI.close();
+    if (!outputAVI)
     {
         std::cerr << "Error: File cannot be Closed\n\tExiting" << std::endl;
         exit(1);
     }
 }
 
-// GetPpmChannel() adds zeros in place of intensity values of other 
+// ConvertToPPM() adds zeros in place of intensity values of other 
 // channels so that a single colour channel can be written directly
 // Returns pointer to image to be written in P6 PPM
-uint8_t* OutputWriter::GetPpmChannel(uint8_t* channel, std::string chanelName)
+uint8_t* OutputWriter::ConvertToPPM(uint8_t* channel, std::string chanelName)
 {
     uint8_t* ppmBin = new uint8_t[3 * TOTAL_PIX]{0};
     for (int itrPpmBin = 0, itrChnl = 0; itrPpmBin < 3 * TOTAL_PIX, 
@@ -209,7 +203,7 @@ uint8_t* OutputWriter::GetPpmChannel(uint8_t* channel, std::string chanelName)
 }
 
 // Returns pointer to Inverted Image to writeen into Bitmap and AVI
-uint8_t* OutputWriter::GetBmpImage(uint8_t* channelRed, uint8_t* channelBlue, 
+uint8_t* OutputWriter::ConvertToBMP(uint8_t* channelRed, uint8_t* channelBlue, 
                                   uint8_t* channelGreen)
 {
     uint8_t* bmpBin = new uint8_t [TOTAL_PIX * 3];

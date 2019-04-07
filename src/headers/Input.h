@@ -1,5 +1,5 @@
-#ifndef INPUT_IMAGE_H
-#define INPUT_IMAGE_H
+#ifndef IMAGE_LOADER_H
+#define IMAGE_LOADER_H
 
 #include <iostream>
 #include <fstream>
@@ -9,28 +9,17 @@
 #define INPUT_SIZE (4096 * 3072 * 3 / 2)
 #define TOTAL_PIX (4096 * 3072)
 
-class Raw12Img
+class ImageLoader
 {   
-
-    uint8_t *cfa;
     char* fileData;
     std::string _filePath;
     std::ifstream _intputFile;
-    void InitializeRedChannel();
-    void InitializeBlueChannel();
-    void InitializeGreenChannel();
-    void PrintIntensity(uint8_t*);
 
 public:
-    uint8_t *redChannel;
-    uint8_t *blueChannel;
-    uint8_t *greenChannel;
-    Raw12Img(std::string);
-    ~Raw12Img();
+    uint8_t *cfa;
+    ImageLoader(std::string);
+    ~ImageLoader();
     void LoadImage();
-    void InitializeCfa();
-    void InitializeChannels();
-    void Print5by5tile();
 };
 
 #endif

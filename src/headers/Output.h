@@ -3,28 +3,21 @@
 #define OUTPUT_IMAGE_H
 
 #include "Input.h"
+#include "Demosaicing.h"
 #include "OutStructs.h"
 
 class OutputWriter
 {
     uint8_t* bmpImage;
-    uint8_t* ppmRedChnl;
-    uint8_t* ppmGreenChnl;
-    uint8_t* ppmBlueChnl;
-    BitmapFileHeader flleHeader;
-    BitmapInfoHeader infoHeader;
+    uint8_t* ConvertToPPM(uint8_t*, std::string);
+    uint8_t* ConvertToBMP(uint8_t*, uint8_t*, uint8_t*);
 
 public:
     static std::ofstream outputFile;
-    OutputWriter();
-    ~OutputWriter();
-    void InitializeOutputChannels(Raw12Img*);
-    void WritePpm(std::string);
-    void WritePpmRed(uint8_t*, std::string);
-    void WriteBmp();
-    void WriteToAvi();
-    uint8_t* GetBmpImage(uint8_t*, uint8_t*, uint8_t*);
-    uint8_t* GetPpmChannel(uint8_t*, std::string);
+    void static Print5by5tile (uint8_t* channel);
+    void WritePpm(std::string, ImageProcessor*);
+    void WriteBmp(ImageProcessor*);
+    void WriteAvi();
 };
 
 class Chunk
@@ -35,7 +28,7 @@ class Chunk
 
 public:
     Chunk(std::string, uint32_t, Avi* avi = nullptr);
-    void Write();
+    void WriteToFile(std::ofstream*);
 };
 
 #endif

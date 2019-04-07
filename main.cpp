@@ -6,38 +6,47 @@ int main()
 {
     std::cout << "//////// !!!! KUMAR SAURABH RAJ !!!! ///////" << std::endl;
 
-    Raw12Img inputImg("test_image/test_image.raw12");
     std::cout << "Loading Raw12 Image" << std::endl;
-    inputImg.LoadImage();
-    inputImg.InitializeCfa();
-    inputImg.InitializeChannels();
-    inputImg.Print5by5tile();
+    ImageLoader raw12Img("test_image/test_image.raw12");
+    raw12Img.LoadImage();
 
     std::cout << "Demosaicing channels" << std::endl;
-    Demosaic demosaicChannel;
+    ImageProcessor debayer;
+    debayer.SeperateChannels(raw12Img.cfa);
+
+    
+    std::cout << "Printing 5 by 5 tile of CFA" << std::endl;
+    OutputWriter::Print5by5tile(raw12Img.cfa);
+    std::cout << "Printing 5 by 5 tile of Red Channel before debayering" << std::endl;
+    OutputWriter::Print5by5tile(debayer.redChannel);
+    std::cout << "Printing 5 by 5 tile of Green Channel before debayering" << std::endl;
+    OutputWriter::Print5by5tile(debayer.greenChannel);
+    std::cout << "Printing 5 by 5 tile of Blue Channel before debayering" << std::endl;
+    OutputWriter::Print5by5tile(debayer.blueChannel);
+
     std::cout << "Demosaicing Red Channel" << std::endl;
-    demosaicChannel.Red(inputImg.redChannel);
+    debayer.Red();
     std::cout << "Demosaicing Green Channel" << std::endl;
-    demosaicChannel.Green(inputImg.greenChannel);
+    debayer.Green();
     std::cout << "Demosaicing Blue Channel" << std::endl;
-    demosaicChannel.Blue(inputImg.blueChannel);
+    debayer.Blue();
 
     std::cout << "Writing output" << std::endl;
-    OutputWriter outputImage;
+    OutputWriter debayeredImage;
 
     std::cout << "Writing 8 bit PPM channels" << std::endl;
     std::cout << "Writing Red channel" << std::endl;
-    outputImage.InitializeOutputChannels(&inputImg);
-    outputImage.WritePpm("red");
+
+    debayeredImage.WritePpm("red", &debayer);
     std::cout << "Writing Green channel" << std::endl;
-    outputImage.WritePpm("blue");
+    debayeredImage.WritePpm("blue", &debayer);
     std::cout << "Writing Blue Channel" << std::endl;
-    outputImage.WritePpm("green"); 
+    debayeredImage.WritePpm("green", &debayer); 
 
     std::cout << "Writing Debayered BMP image" << std::endl;
-    outputImage.WriteBmp();
+    debayeredImage.WriteBmp(&debayer);
     std::cout << "Writing Debayered Image into AVI" << std::endl;
-    outputImage.WriteToAvi();
+    debayeredImage.WriteAvi();
 
 
     std::cout << "Please check results folder after sometime for output images" << std::endl;

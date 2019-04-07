@@ -1,14 +1,23 @@
-#ifndef DEMOSAIC_H
-#define DEMOSAIC_H
+#ifndef IMAGE_PROCESSOR_H
+#define IMAGE_PROCESSOR_H
 
 #include "Input.h"
 
-class Demosaic
+class ImageProcessor
 {
+	void InitializeRedChannel(uint8_t*);
+    void InitializeBlueChannel(uint8_t*);
+    void InitializeGreenChannel(uint8_t*);
 public:
-    void Red(uint8_t*);
-    void Blue(uint8_t*);
-    void Green(uint8_t*);
+	uint8_t *redChannel;
+    uint8_t *blueChannel;
+    uint8_t *greenChannel;
+    ImageProcessor();
+    ~ImageProcessor();
+    void Red();
+    void Blue();
+    void Green();
+    void SeperateChannels(uint8_t*);
 };
 
 #endif
