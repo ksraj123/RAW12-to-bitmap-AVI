@@ -1,6 +1,6 @@
-#include "src/headers/Input.h"
-#include "src/headers/Demosaicing.h"
-#include "src/headers/Output.h"
+#include "src/headers/ImageLoader.h"
+#include "src/headers/ImageProcessor.h"
+#include "src/headers/OutputWriter.h"
 
 int main()
 {
@@ -10,25 +10,25 @@ int main()
     ImageLoader raw12Img("test_image/test_image.raw12");
     raw12Img.LoadImage();
 
-    std::cout << "Demosaicing channels" << std::endl;
     ImageProcessor debayer;
     debayer.SeperateChannels(raw12Img.cfa);
 
-    
-    std::cout << "Printing 5 by 5 tile of CFA" << std::endl;
+    std::cout << "Printing 5 by 5 tiles\n" << std::endl;
+    std::cout << "CFA" << std::endl;
     OutputWriter::Print5by5tile(raw12Img.cfa);
-    std::cout << "Printing 5 by 5 tile of Red Channel before debayering" << std::endl;
+    std::cout << "Red Channel before debayering" << std::endl;
     OutputWriter::Print5by5tile(debayer.redChannel);
-    std::cout << "Printing 5 by 5 tile of Green Channel before debayering" << std::endl;
+    std::cout << "Green Channel before debayering" << std::endl;
     OutputWriter::Print5by5tile(debayer.greenChannel);
-    std::cout << "Printing 5 by 5 tile of Blue Channel before debayering" << std::endl;
+    std::cout << "Blue Channel before debayering" << std::endl;
     OutputWriter::Print5by5tile(debayer.blueChannel);
 
-    std::cout << "Demosaicing Red Channel" << std::endl;
+    std::cout << "Debayering channels" << std::endl;
+    std::cout << "Debayering Red Channel" << std::endl;
     debayer.Red();
-    std::cout << "Demosaicing Green Channel" << std::endl;
+    std::cout << "Debayering Green Channel" << std::endl;
     debayer.Green();
-    std::cout << "Demosaicing Blue Channel" << std::endl;
+    std::cout << "Debayering Blue Channel" << std::endl;
     debayer.Blue();
 
     std::cout << "Writing output" << std::endl;
@@ -49,6 +49,6 @@ int main()
     debayeredImage.WriteAvi();
 
 
-    std::cout << "Please check results folder after sometime for output images" << std::endl;
+    std::cout << "Please check ./results folder after sometime for output images" << std::endl;
     std::cout << "!!!!Thank you for using my program!!!!" << std::endl;
 }

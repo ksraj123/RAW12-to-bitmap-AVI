@@ -1,13 +1,14 @@
 #ifndef IMAGE_PROCESSOR_H
 #define IMAGE_PROCESSOR_H
 
-#include "Input.h"
+#include "ImageLoader.h"
 
 class ImageProcessor
 {
 	void InitializeRedChannel(uint8_t*);
     void InitializeBlueChannel(uint8_t*);
     void InitializeGreenChannel(uint8_t*);
+    
 public:
 	uint8_t *redChannel;
     uint8_t *blueChannel;

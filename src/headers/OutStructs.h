@@ -16,6 +16,7 @@ struct BitmapFileHeader
     int32_t dataOffset;
 } GCC_PACK ;
 
+
 struct BitmapInfoHeader
 {
     int32_t headerSize {40};
@@ -31,6 +32,7 @@ struct BitmapInfoHeader
     int32_t importantColors {0};
 } GCC_PACK ;
 
+
 #ifdef _WIN32
 #pragma pack(pop)
 #endif
@@ -38,9 +40,7 @@ struct BitmapInfoHeader
 #include <string.h>
 #include <stdlib.h>
 
-struct Avi
-{    
-};
+struct Avi{};
 
 
 struct MainAVIHeader : Avi
@@ -58,10 +58,11 @@ struct MainAVIHeader : Avi
     uint32_t  Reserved[4] {0};
 } ;
 
+
 struct AVIStreamHeader : Avi
 {
     char fccType[4] {'v', 'i', 'd', 's'};
-    char fccHandler[4] {'R', 'A', 'W', ' '}; //optioanl
+    char fccHandler[4] {'R', 'A', 'W', ' '};
     uint32_t  Flags{0};
     uint16_t  Priority{0};
     uint16_t  Language{0};
@@ -75,12 +76,13 @@ struct AVIStreamHeader : Avi
     uint32_t  SampleSize{0};
     struct
     {
-        uint16_t left{0}; // x coordinate of upper left corner
-        uint16_t top{0}; // y coordinate of upper left corner
-        uint16_t right{IMAGE_WIDTH}; // x coodinate of lower right corner
-        uint16_t bottom{IMAGE_HEIGHT}; // y coordinate of lower right corner
+        uint16_t left{0};
+        uint16_t top{0};
+        uint16_t right{IMAGE_WIDTH};
+        uint16_t bottom{IMAGE_HEIGHT};
     }  rcFrame;
 };
+
 
 struct AVIStreamFormat : Avi
 {

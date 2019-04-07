@@ -1,7 +1,6 @@
-#include "headers/Input.h"
+#include "headers/ImageLoader.h"
 #define Sensel(A, B) ((A & 0x0F) << 4 | (B & 0xF0) >> 4)
 
-// Constructor - defines arrays and loads the image
 ImageLoader::ImageLoader(std::string filePath)
               : _filePath(filePath),
                 cfa(new uint8_t[TOTAL_PIX]{0}),
@@ -10,11 +9,13 @@ ImageLoader::ImageLoader(std::string filePath)
 {
 }
 
+
 ImageLoader::~ImageLoader()
 {
     delete fileData;
     delete cfa;
 }
+
 
 void ImageLoader::LoadImage()
 {

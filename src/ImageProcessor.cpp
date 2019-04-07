@@ -1,4 +1,4 @@
-#include "headers/Demosaicing.h"
+#include "headers/ImageProcessor.h"
 
 // Bilinear Interpolation approach
 
@@ -9,6 +9,7 @@ ImageProcessor::ImageProcessor()
 {
 }
 
+
 ImageProcessor::~ImageProcessor()
 {
     delete redChannel;
@@ -16,12 +17,14 @@ ImageProcessor::~ImageProcessor()
     delete greenChannel;
 }
 
+
 void ImageProcessor::SeperateChannels(uint8_t* cfa)
 {
     InitializeRedChannel(cfa);
     InitializeGreenChannel(cfa);
     InitializeBlueChannel(cfa);
 }
+
 
 void ImageProcessor::InitializeRedChannel(uint8_t* cfa)
 {
@@ -40,6 +43,7 @@ void ImageProcessor::InitializeRedChannel(uint8_t* cfa)
     }
 }
 
+
 void ImageProcessor::InitializeBlueChannel(uint8_t* cfa)
 {
     for (int itrBlue = IMAGE_WIDTH + 1; itrBlue < TOTAL_PIX;)
@@ -57,6 +61,7 @@ void ImageProcessor::InitializeBlueChannel(uint8_t* cfa)
     }
 }
 
+
 void ImageProcessor::InitializeGreenChannel(uint8_t* cfa)
 {
     for (int itrGreen = 1; itrGreen < TOTAL_PIX; itrGreen += 2)
@@ -72,6 +77,7 @@ void ImageProcessor::InitializeGreenChannel(uint8_t* cfa)
         }
     }
 }
+
 
 void ImageProcessor::Red()
 {
@@ -92,6 +98,7 @@ void ImageProcessor::Red()
     std::fill(redChannel + TOTAL_PIX - IMAGE_WIDTH, redChannel + TOTAL_PIX, 0); //last row
 }
 
+
 void ImageProcessor::Blue()
 {
     int row;
@@ -109,7 +116,8 @@ void ImageProcessor::Blue()
     }
     std::fill(blueChannel, blueChannel+IMAGE_WIDTH, 0); // first row
     std::fill(blueChannel + TOTAL_PIX - IMAGE_WIDTH, blueChannel + TOTAL_PIX, 0); //last row
- }
+}
+
 
 void ImageProcessor::Green()
 {

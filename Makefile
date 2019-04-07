@@ -1,19 +1,19 @@
 all: apertus
 
-apertus: main.o Input.o Output.o Demosaicing.o
-	g++ -o apertus main.o Input.o Output.o Demosaicing.o
+apertus: main.o ImageLoader.o OutputWriter.o ImageProcessor.o
+	g++ -o apertus main.o ImageLoader.o OutputWriter.o ImageProcessor.o
 
 main.o: main.cpp
 	g++ -c main.cpp
 
-Output.o: src/Output.cpp src/headers/Output.h
-	g++ -c src/Output.cpp
+OutputWriter.o: src/OutputWriter.cpp src/headers/OutputWriter.h
+	g++ -c src/OutputWriter.cpp
 
-Demosaicing.o: src/Demosaicing.cpp src/headers/Demosaicing.h
-	g++ -c src/Demosaicing.cpp
+ImageProcessor.o: src/ImageProcessor.cpp src/headers/ImageProcessor.h
+	g++ -c src/ImageProcessor.cpp
 
-Input.o: src/Input.cpp src/headers/Input.h
-	g++ -c src/Input.cpp
+ImageLoader.o: src/ImageLoader.cpp src/headers/ImageLoader.h
+	g++ -c src/ImageLoader.cpp
 
 clean_all: clean clean_results
 

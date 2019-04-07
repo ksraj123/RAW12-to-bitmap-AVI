@@ -2,8 +2,8 @@
 #ifndef OUTPUT_IMAGE_H
 #define OUTPUT_IMAGE_H
 
-#include "Input.h"
-#include "Demosaicing.h"
+#include "ImageLoader.h"
+#include "ImageProcessor.h"
 #include "OutStructs.h"
 
 class OutputWriter
@@ -19,6 +19,7 @@ public:
     void WriteBmp(ImageProcessor*);
     void WriteAvi();
 };
+
 
 class Chunk
 {
