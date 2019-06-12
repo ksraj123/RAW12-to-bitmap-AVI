@@ -3,6 +3,7 @@
 descriptionSensors used in digital cameras lack the ability to capture color images as they lack the ability to distinguish how much of each color they are receiving. To capture color images a filter is placed above the sensor which permits only a particular color light at each sensel but as a result of this, each sensel has intensity values of only one channel which is not sufficient to produce a color image. Hence different demosaicing algorithms are used to obtain full-color RGB images from RAW images.
 
 For more information about demosaicing refer to these links -
+
 https://en.wikipedia.org/wiki/Demosaicing
 https://en.wikipedia.org/wiki/Bayer_filter
 
