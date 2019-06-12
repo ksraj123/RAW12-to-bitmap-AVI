@@ -5,6 +5,7 @@ descriptionSensors used in digital cameras lack the ability to capture color ima
 For more information about demosaicing refer to these links -
 
 https://en.wikipedia.org/wiki/Demosaicing
+
 https://en.wikipedia.org/wiki/Bayer_filter
 
 This project is written in C++, it debayers a 12-bit RAW12 RGGB image using bilinear interpolation approach and writes 8-bit Red, Green and Blue channels into PPM(P6) files and writes the deBayered full-color RGB image into a BMP file and into a single frame riff AVI file.
